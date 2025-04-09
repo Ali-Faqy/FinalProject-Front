@@ -1,0 +1,237 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+.container{
+    width: 100%;
+    height: 1320px;
+    display: flex;
+    flex-direction: column;
+}
+.aboutUs {
+    width: 100%;
+    height: 670px;
+    display: flex;
+    flex-direction: row;
+}
+
+.part1{
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.part1 h1{
+    color: #204E51;
+    font-size: 72px;
+    text-align: left;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.part1 p{
+    color: #204E51;
+    text-align: left;
+    font-size: 18px;
+    margin-top: 20px;
+    max-width: 600px;
+}
+
+.part1 .learnMoreBtn {
+    color: white;
+    background-color: #204E51;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 30px;
+    width: 120px;
+    height: 40px;
+    margin-top: 70px;
+    margin-right: 330px;
+}
+
+.part2{
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.part2 .card{
+    width: 60%;
+    height: 90%;
+    background-color: #204E51;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+}
+
+.part2 .card .image{
+    width: 50%;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+}
+
+.part2 .card .image img{
+    margin-bottom: 20px;
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+}
+
+.part2 .card .text{
+    width: 50%;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+}
+
+.part2 .card .text div{
+    height: 20%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    width: fit-content;
+}
+
+.part2 .card .text h1 {
+    margin-bottom: 5px;
+}
+
+.part2 .card .text  p {
+    margin-top: 0;
+}
+
+
+.part2 .card .text .experience{
+    margin-left: -30px;
+    margin-top: -90px;
+}
+
+.part2 .card .text .product{
+    margin-left: -30px;
+    margin-top: 40px;
+}
+
+.part2 .card .text .client{
+    margin-left: -30px;
+    margin-top: 40px;
+}
+
+.part2 .card .text .member{
+    margin-left: -30px;
+    margin-top: 40px;
+}
+
+.ellipseContainer {
+    position: relative;
+    display: inline-block;
+}
+
+.ellipse {
+    display: block;
+}
+
+.check {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+
+.owners{
+    width: 100%;
+    height: 650px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.owners h1{
+    color: #204E51;
+    font-size: 72px;
+    text-align: center;
+    margin-top: 0;
+}
+
+.owners .owner{
+    width: 100%;
+    height: 50%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 120px;
+}
+
+.owners .owner img{
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    
+}
+.owners .owner div{
+    width: 70%;
+    height: 100%;
+    background-color: #204E51;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.owners .owner button{
+    color: black;
+    background-color: #204e5167;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.owners .owner div .ownerImage{
+    width : 250px;
+    height: 250px;
+    background-color: black;
+    border-radius: 25%;
+    margin-left: 30px;
+}
+
+.owners .owner div .ownerInfo{
+    width: 50%;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    margin-left: 30px;
+}
+
+.owners .owner div .ownerInfo p {
+    color: white;
+    margin-top: 25px;
+}
+
+.owners .owner div .ownerInfo h1{
+    color: white;
+    margin-top: 15px;
+}
+
+
