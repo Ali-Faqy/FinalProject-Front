@@ -1,5 +1,3 @@
-"use client";
-
 import { Link } from "react-router-dom";
 import Navication from "../../HomePage/Component/Navication.jsx";
 import HeroBackGround from "../../CategoriesPage/Component/HeroBackGround.jsx";
@@ -19,11 +17,12 @@ import {
   ArrowUpDown,
   Filter,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Slider } from "../../UI/Slider.jsx";
 import { Separtor } from "../../UI/Separtor.jsx";
 import { Checkbox } from "../../UI/Checkbox.jsx";
 import { Switch } from "../../UI/Switch.jsx";
+import {getAllProducts, getAllCategories, getAllBrands} from "../Code/Product_data.js";
 
 function ProductsPage() {
   const [viewMode, setViewMode] = useState("grid");
@@ -36,321 +35,62 @@ function ProductsPage() {
   const [selectedBrand, setSelectedBrand] = useState(null);
   const [inStockOnly, setInStockOnly] = useState(false);
   const [onSaleOnly, setOnSaleOnly] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [brands, setBrands] = useState([]);
 
-  const categories = [
-    "Agricultural Machinery",
-    "Fertilizers",
-    "Seeds",
-    "Pesticides",
-    "Irrigation Equipment",
-    "Farm Tools",
-    "Animal Feed",
-  ];
+  const fetchProducts = async () => {
+    const data = await getAllProducts();
+    if (data) {
+      // Map API data to match the structure used in the component
+      const mappedProducts = data.map((product) => ({
+        id: product.product_id,
+        name: product.product_name,
+        price: product.selling_price,
+        image: product.attachments[0] || NoImage,
+        inStock: product.availability_status,
+        rating: product.product_rating,
+        reviews: product.number_of_users_rating_product,
+        description: product.how_use_it,
+        brand: `Brand ${product.company_id}`, // Adjust as needed
+        category: `Category ${product.category_id}`, // Adjust as needed
+        discount: product.offer_percentage,
+        featured: false, // Adjust based on your logic
+        new: new Date(product.added_at) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // Mark as new if added in the last 30 days
+      }));
+      setProducts(mappedProducts);
+    }
+  };
 
-  const brands = [
-    "FarmMaster",
-    "AquaGrow",
-    "HarvestPro",
-    "SeedMaster",
-    "GardenPro",
-    "SoilSense",
-    "AquaFlow",
-    "HandGuard",
-    "EcoGrow",
-    "GardenMaster",
-  ];
+  const fetchCategories = async () => {
+    const data = await getAllCategories();
+    if (data) {
+      // Map API data to match the structure used in the component
+      const mappedCategories = data.map((category) => ({
+        id: category.category_id,
+        name: category.category_name,
 
-  const products = [
-    {
-      id: 1,
-      name: "Premium Tractor",
-      price: 1299.99,
-      image: "",
-      inStock: true,
-      rating: 4.8,
-      reviews: 124,
-      description:
-        "Heavy-duty tractor with advanced hydraulic system and fuel-efficient engine. Perfect for large-scale farming operations.",
-      brand: "FarmMaster",
-      category: "Agricultural Machinery",
-      tags: ["machinery", "heavy-duty", "engine"],
-      discount: 0,
-      featured: true,
-      new: false,
-    },
-    {
-      id: 2,
-      name: "Irrigation System",
-      price: 249.99,
-      image: "",
-      inStock: true,
-      rating: 4.5,
-      reviews: 89,
-      description:
-        "Smart irrigation system with moisture sensors and automated scheduling. Reduces water usage by up to 40%.",
-      brand: "AquaGrow",
-      category: "Irrigation Equipment",
-      tags: ["water", "smart", "sensors"],
-      discount: 10,
-      featured: true,
-      new: true,
-    },
-    {
-      id: 3,
-      name: "Harvesting Tool",
-      price: 89.99,
-      image: "",
-      inStock: false,
-      rating: 4.2,
-      reviews: 56,
-      description:
-        "Ergonomic harvesting tool with adjustable grip and stainless steel blade. Designed for comfort during long harvesting sessions.",
-      brand: "HarvestPro",
-      category: "Farm Tools",
-      tags: ["manual", "ergonomic", "steel"],
-      discount: 0,
-      featured: false,
-      new: false,
-    },
-    {
-      id: 4,
-      name: "Seed Planter",
-      price: 159.99,
-      image: "",
-      inStock: true,
-      rating: 4.7,
-      reviews: 72,
-      description:
-        "Precision seed planter with adjustable depth control and row spacing. Ensures optimal seed placement for maximum yield.",
-      brand: "SeedMaster",
-      category: "Farm Tools",
-      tags: ["planting", "precision", "adjustable"],
-      discount: 15,
-      featured: true,
-      new: false,
-    },
-    {
-      id: 5,
-      name: "Garden Shears",
-      price: 29.99,
-      image: "",
-      inStock: true,
-      rating: 4.4,
-      reviews: 103,
-      description:
-        "Premium garden shears with titanium-coated blades and shock-absorbing handles. Makes clean cuts without damaging plants.",
-      brand: "GardenPro",
-      category: "Farm Tools",
-      tags: ["cutting", "titanium", "ergonomic"],
-      discount: 0,
-      featured: false,
-      new: true,
-    },
-    {
-      id: 6,
-      name: "Soil Tester Kit",
-      price: 49.99,
-      image: "",
-      inStock: true,
-      rating: 4.3,
-      reviews: 67,
-      description:
-        "3-in-1 soil testing kit that measures pH, moisture, and nutrient levels. Essential for maintaining optimal growing conditions.",
-      brand: "SoilSense",
-      category: "Farm Tools",
-      tags: ["testing", "soil", "pH"],
-      discount: 5,
-      featured: false,
-      new: false,
-    },
-    {
-      id: 7,
-      name: "Water Pump",
-      price: 199.99,
-      image: "",
-      inStock: true,
-      rating: 4.6,
-      reviews: 48,
-      description:
-        "High-capacity water pump with energy-efficient motor and durable construction. Ideal for irrigation and drainage applications.",
-      brand: "AquaFlow",
-      category: "Irrigation Equipment",
-      tags: ["water", "pump", "high-capacity"],
-      discount: 0,
-      featured: true,
-      new: false,
-    },
-    {
-      id: 8,
-      name: "Farming Gloves",
-      price: 19.99,
-      image: "",
-      inStock: true,
-      rating: 4.1,
-      reviews: 92,
-      description:
-        "Heavy-duty farming gloves with puncture-resistant material and breathable design. Provides protection without sacrificing dexterity.",
-      brand: "HandGuard",
-      category: "Farm Tools",
-      tags: ["protection", "durable", "comfortable"],
-      discount: 0,
-      featured: false,
-      new: false,
-    },
-    {
-      id: 9,
-      name: "Compost Bin",
-      price: 79.99,
-      image: "",
-      inStock: true,
-      rating: 4.4,
-      reviews: 38,
-      description:
-        "Large capacity compost bin with aeration system and secure lid. Transforms garden waste into nutrient-rich compost.",
-      brand: "EcoGrow",
-      category: "Farm Tools",
-      tags: ["compost", "eco-friendly", "garden"],
-      discount: 0,
-      featured: false,
-      new: true,
-    },
-    {
-      id: 10,
-      name: "Advanced Fertilizer",
-      price: 49.99,
-      image: "",
-      inStock: true,
-      rating: 4.9,
-      reviews: 157,
-      description:
-        "Premium fertilizer with slow-release formula. Provides essential nutrients for a variety of plants, from vegetables to flowers.",
-      brand: "EcoGrow",
-      category: "Fertilizers",
-      tags: ["organic", "slow-release", "nutrients"],
-      discount: 0,
-      featured: true,
-      new: true,
-    },
-    {
-      id: 11,
-      name: "Hydroponic System",
-      price: 399.99,
-      image: "",
-      inStock: true,
-      rating: 4.6,
-      reviews: 112,
-      description:
-        "Fully automated hydroponic growing system with LED grow lights. Perfect for indoor gardening and maximizing space usage.",
-      brand: "AquaFlow",
-      category: "Hydroponics",
-      tags: ["hydroponic", "indoor", "automated"],
-      discount: 20,
-      featured: true,
-      new: false,
-    },
-    {
-      id: 12,
-      name: "Garden Sprayer",
-      price: 34.99,
-      image: "",
-      inStock: true,
-      rating: 4.3,
-      reviews: 58,
-      description:
-        "Pressure garden sprayer with ergonomic handle and adjustable nozzle. Ideal for applying fertilizers and pesticides.",
-      brand: "GardenPro",
-      category: "Garden Tools",
-      tags: ["sprayer", "fertilizer", "pesticide"],
-      discount: 5,
-      featured: false,
-      new: false,
-    },
-    {
-      id: 13,
-      name: "Farm Irrigation Pipe",
-      price: 79.99,
-      image: "",
-      inStock: true,
-      rating: 4.5,
-      reviews: 34,
-      description:
-        "Durable irrigation pipe with UV resistance. Ensures consistent water flow across large farms and gardens.",
-      brand: "AquaFlow",
-      category: "Irrigation Equipment",
-      tags: ["pipe", "irrigation", "UV-resistant"],
-      discount: 0,
-      featured: false,
-      new: true,
-    },
-    {
-      id: 14,
-      name: "Plant Growth Light",
-      price: 59.99,
-      image: "",
-      inStock: true,
-      rating: 4.7,
-      reviews: 82,
-      description:
-        "Energy-efficient LED plant growth light, designed to simulate sunlight for year-round plant growth.",
-      brand: "EcoGrow",
-      category: "Lighting",
-      tags: ["LED", "growth", "indoor"],
-      discount: 10,
-      featured: true,
-      new: true,
-    },
-    {
-      id: 15,
-      name: "Electric Lawn Mower",
-      price: 249.99,
-      image: "",
-      inStock: true,
-      rating: 4.8,
-      reviews: 150,
-      description:
-        "Electric lawn mower with adjustable height and eco-friendly battery. Great for small to medium-sized lawns.",
-      brand: "FarmMaster",
-      category: "Garden Tools",
-      tags: ["lawn", "electric", "eco-friendly"],
-      discount: 15,
-      featured: false,
-      new: false,
-    },
-    {
-      id: 16,
-      name: "Portable Generator",
-      price: 399.99,
-      image: "",
-      inStock: true,
-      rating: 4.6,
-      reviews: 74,
-      description:
-        "Compact and portable generator for outdoor activities. Reliable power source for all your devices during emergencies.",
-      brand: "HandGuard",
-      category: "Outdoor Equipment",
-      tags: ["generator", "outdoor", "portable"],
-      discount: 0,
-      featured: false,
-      new: false,
-    },
-    {
-      id: 17,
-      name: "Portable Solar Panel",
-      price: 149.99,
-      image: "",
-      inStock: true,
-      rating: 4.7,
-      reviews: 95,
-      description:
-        "Compact and efficient portable solar panel. Ideal for camping, outdoor adventures, and emergency power supply.",
-      brand: "EcoGrow",
-      category: "Outdoor Equipment",
-      tags: ["solar", "portable", "energy"],
-      discount: 0,
-      featured: true,
-      new: true,
-    },
-  ];
+      }));
+      setCategories(mappedCategories);
+    }
+  };
+
+  const fetchBrands = async () => {
+    const data = await getAllBrands();
+    if (data) {
+      // Map API data to match the structure used in the component
+      const mappedBrands = data.map((brand) => ({
+        name: brand.company_name,
+      }));
+      setBrands(mappedBrands);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+    fetchCategories();
+    fetchBrands();
+  }, []);
 
   const filteredProducts = products.filter((product) => {
     const matchesSearch =
@@ -611,16 +351,16 @@ function ProductsPage() {
                       <div key={index} className="flex items-center space-x-2">
                         <Checkbox
                           id={`category-${index}`}
-                          checked={selectedCategory === category}
+                          checked={selectedCategory === category.name}
                           onCheckedChange={(checked) => {
-                            setSelectedCategory(checked ? category : null);
+                            setSelectedCategory(checked ? category.name : null);
                           }}
                         />
                         <label
                           htmlFor={`category-${index}`}
                           className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                         >
-                          {category}
+                          {category.name}
                         </label>
                       </div>
                     ))}
@@ -637,16 +377,16 @@ function ProductsPage() {
                       <div key={index} className="flex items-center space-x-2">
                         <Checkbox
                           id={`brand-${index}`}
-                          checked={selectedBrand === brand}
+                          checked={selectedBrand === brand.name}
                           onCheckedChange={(checked) => {
-                            setSelectedBrand(checked ? brand : null);
+                            setSelectedBrand(checked ? brand.name : null);
                           }}
                         />
                         <label
                           htmlFor={`brand-${index}`}
                           className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                         >
-                          {brand}
+                          {brand.name}
                         </label>
                       </div>
                     ))}
@@ -774,7 +514,7 @@ function ProductsPage() {
                           {product.name}
                         </h3>
                       </Link>
-                      <p className="text-xs text-[#a4a4a4] mt-1 line-clamp-2">
+                      <p className="text-xs text-[#a4a4a4] mt-1 line-clamp-2 text-start">
                         {product.description}
                       </p>
                       <div className="flex items-center justify-between mt-2">
@@ -1020,7 +760,7 @@ function ProductsPage() {
             <div className="md:w-1/2 relative">
               <div className="aspect-video relative rounded-lg overflow-hidden shadow-xl">
                 <img
-                  src="/placeholder.svg?height=400&width=600&text=Shopping+Guide"
+                  src="/"
                   alt="Shopping Guide"
                   className="object-cover w-full h-full"
                 />
