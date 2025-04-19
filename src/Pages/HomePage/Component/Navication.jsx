@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
+import getUserNameAndEmail from "../Code/Navication_data.js";
 import {
   Tractor,
   User,
@@ -10,13 +11,35 @@ import {
   Truck,
 } from "lucide-react";
 
-function Navigation() {
+function Navigation({ userId }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   let numberOfItemsCart = 3;
-  let userName = "Ali Othman";
-  let userEmail = "AliFaqy@gmail.com";
-  let userId = 1;
+
+  const [userData, setUserData] = useState({ userName: "", userEmail: "" });
+  const fetchUserData = async () => {
+    try {
+      const data = await getUserNameAndEmail(userId);
+      const user = {
+        "userName": data.user_name,
+        "userEmail": data.user_email,
+      };
+      setUserData(user);
+    } catch (error) {
+      console.error("Fetch error:", error);
+    }
+  };
+  
+    // Fetch user data from the API
+    useEffect(() => {
+      fetchUserData();
+      console.log(userData.userName, userData.userEmail);
+    }, []);
+    
+
+
+
+
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -85,10 +108,10 @@ function Navigation() {
                 >
                   <div className="flex flex-col gap-2 items-start justify-start px-4 py-2 border-b">
                     <span className='text-sm font-medium text-gray-900"'>
-                      {userName}
+                      {userData.userName}
                     </span>
                     <span className="text-xs text-gray-500 truncate">
-                      {userEmail}
+                      {userData.userEmail || "No email provided"}
                     </span>
                   </div>
 

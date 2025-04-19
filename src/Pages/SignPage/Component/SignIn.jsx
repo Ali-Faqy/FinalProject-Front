@@ -1,11 +1,58 @@
 import {Link} from 'react-router-dom'
-import { useState } from "react"
+import { useState} from "react"
+import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Github, Facebook, Mail, Linkedin, Lock, Eye, EyeOff } from "lucide-react"
-
+import IsUserDefined from "../Code/SignIn_data.js"
 function SignIn() {
   const [showPassword, setShowPassword] = useState(false)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [User, setUser] = useState({
+    "isDefined": false,
+    "userId": 0,
+  })
+  const navigate = useNavigate();
+
+  
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+  
+  const handleSignIn = async () => {
+    if (!email || !password) {
+      alert("Please fill in both email and password.");
+      return;
+    }
+  
+    if (!isValidEmail(email)) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+  
+    try {
+      const data = await IsUserDefined(email, password);
+      const user = {
+        "isDefined": data.IsUserDefined,
+        "userId": data.user_id,
+      };
+      setUser(user);
+  
+      if (user.isDefined) {
+        navigate("/home", { state: { userId: user.userId } });
+      } else {
+        alert("Invalid login credentials.");
+      }
+    } catch (error) {
+      console.error("Fetch error:", error);
+    }
+  };
+  
+  
+
+  
+
+
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-gray-50 to-gray-100">
@@ -78,7 +125,8 @@ function SignIn() {
               Forgot Your Password?
             </button>
           </div>
-          <button className="w-full h-12 rounded-lg bg-teal-700 text-white font-medium hover:bg-teal-800 transition-all duration-300 transform hover:translate-y-[-2px] shadow-md">
+          <button onClick={handleSignIn}
+          className="w-full h-12 rounded-lg bg-teal-700 text-white font-medium hover:bg-teal-800 transition-all duration-300 transform hover:translate-y-[-2px] shadow-md">
             SIGN IN
           </button>
           <div className="mt-6 text-center md:hidden">
