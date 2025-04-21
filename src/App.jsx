@@ -10,7 +10,7 @@ import CheckOutPage from './Pages/CheckOutPage/Component/CheckOutPage.jsx';
 import ErrorPage from "./Pages/ErrorPage/ErrorPage.jsx";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import { useEffect, useState } from 'react';
-
+import AI from './Pages/AI/Component/AI.jsx';
 function App() {
   const [userId, setUserId] = useState(localStorage.getItem("userId"));
 
@@ -36,6 +36,7 @@ function App() {
             <Route path="/products" element={<ProductsPage />} />
             <Route path="/cart/:userId" element={<CartPage />} />
             <Route path="/checkout/:userId" element={<CheckOutPage />} />
+            <Route path="/AI" element={<AI />} />
           </>
         ) : (
           <>
@@ -44,6 +45,7 @@ function App() {
             <Route path="/products" element={<Navigate to="/" />} />
             <Route path="/cart/:userId" element={<Navigate to="/" />} />
             <Route path="/checkout/:userId" element={<Navigate to="/" />} />
+            <Route path="/AI" element={<Navigate to="/" />} />
           </>
         )}
         <Route path="*" element={<ErrorPage />} />

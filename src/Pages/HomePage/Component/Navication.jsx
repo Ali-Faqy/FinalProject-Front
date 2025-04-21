@@ -98,7 +98,7 @@ function Navigation() {
           <Link to="/home"><button className="text-gray-700 hover:text-green-600 transition duration-300 text-lg font-medium transition-colors">
             Social Media
           </button></Link>
-          <Link to="/home"><button className="text-gray-700 hover:text-green-600 transition duration-300 text-lg font-medium transition-colors">
+          <Link to="/AI"><button className="text-gray-700 hover:text-green-600 transition duration-300 text-lg font-medium transition-colors">
             Advanced Search
           </button></Link>
         </nav>
