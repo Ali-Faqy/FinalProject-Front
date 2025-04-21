@@ -37,6 +37,9 @@ function SignIn() {
         "userId": data.user_id,
       };
       setUser(user);
+      localStorage.setItem("userId", user.userId);
+
+      window.dispatchEvent(new Event("storage"));
   
       if (user.isDefined) {
         localStorage.setItem("userId", user.userId);

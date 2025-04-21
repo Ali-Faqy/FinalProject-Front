@@ -1,12 +1,31 @@
 import { Link } from "react-router-dom";
 import imagee from "/src/assets/image10.png";
-import { Star } from "lucide-react";
-
+import { Star, Heart } from "lucide-react";
+import {InsertProductIntoCart, InsertProductIntoWishlist}  from "../../ProductsPage/Code/Product_data.js";
 function CardProduct({ product }) {
+
   const { id, name, price, tag, description, rating, availability, image } =
     product;
 
   const stars = [];
+
+  const getDriveThumbnail = (url) => {
+    const match = url.match(/\/d\/([^/]+)\//);
+    return match ? `https://drive.google.com/thumbnail?id=${match[1]}` : imagee;
+  };
+
+  const handelWishLest = () => {
+    const userId = localStorage.getItem("userId");
+    const productId = id;
+
+    InsertProductIntoWishlist(userId, productId);
+  }
+  const handelAddProductIntoCart = () => {
+    const userId = localStorage.getItem("userId");
+    const productId = id;
+
+    InsertProductIntoCart(userId, productId, 1);
+  }
 
   // Whole stars
   for (let i = 0; i < Math.floor(rating); i++) {
@@ -23,11 +42,12 @@ function CardProduct({ product }) {
 
   return (
     <div className="h-[520px] w-[300px] rounded-xl shadow-2xl">
+
       <div
         className="w-full h-[320px] pt-[15px] rounded-t-xl bg-cover bg-center hover:shadow-2xl transition-all relative group"
         style={{
           backgroundImage: `url(${
-            image && image.trim() !== "" ? image : imagee
+            image && image.trim() !== "" ? getDriveThumbnail(image) : imagee
           })`,
         }}
       >
@@ -37,6 +57,12 @@ function CardProduct({ product }) {
         <p className="text-transparent group-hover:text-white transition-all duration-300 text-center w-full max-w-[90%]">
           {description}
         </p>
+        <div className="absolute top-3 right-3 flex flex-col gap-2">
+        <button onClick={handelWishLest}
+        className="h-8 w-8 rounded-full bg-white/90 text-[#a4a4a4] hover:bg-white hover:text-red-500 shadow-sm flex items-center justify-center">
+          <Heart className="h-4 w-4" />
+        </button>
+      </div>
       </div>
       <div className="flex flex-col justify-start items-start pl-[15px] pt-[15px] gap-3">
         <h3 className="text-lg font-semibold m-0">
@@ -44,7 +70,9 @@ function CardProduct({ product }) {
           {availability ? (
             <span className="text-green-400 ml-2 text-[10px]">(Available)</span>
           ) : (
-            <span className="text-red-500 ml-2 text-[10px]">(Not Available)</span>
+            <span className="text-red-500 ml-2 text-[10px]">
+              (Not Available)
+            </span>
           )}
         </h3>
         <p className="text-sm text-[#6B7280] m-0">
@@ -56,7 +84,8 @@ function CardProduct({ product }) {
           </p>
           <div className="flex items-center gap-1">{stars}</div>
         </div>
-        <button  className="text-xl mt-5 w-[270px] h-[40px] bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 rounded-full">
+        <button onClick={handelAddProductIntoCart}
+        className="text-xl mt-5 w-[270px] h-[40px] bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 rounded-full">
           Add to Cart
         </button>
       </div>

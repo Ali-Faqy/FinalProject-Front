@@ -14,8 +14,8 @@ function Header(){
                 equipment designed to enhance your farming 
                 experience and maximize productivity.</p>
                 <div className="flex flex-row gap-10 justify-start items-center pt-12 mt-10">
-                    <button className="w-[150px] h-[50px] bg-green-600 hover:from-[#006666] hover:to-green-800 text-white rounded-full hover:shadow-xl transition-all">Shop Now</button>
-                    <button className="w-[200px] h-[50px] bg-white border-2 border-green-200 text-[#008080] hover:bg-green-50 hover:text-black rounded-full">View Categories</button>
+                    <Link to="/products"><button className="w-[150px] h-[50px] bg-green-600 hover:from-[#006666] hover:to-green-800 text-white rounded-full hover:shadow-xl transition-all">Shop Now</button></Link>
+                    <Link to="/categories"><button className="w-[200px] h-[50px] bg-white border-2 border-green-200 text-[#008080] hover:bg-green-50 hover:text-black rounded-full">View Categories</button></Link>
                 </div>
             </div>
             <div className="h-full w-1/2 flex justify-center items-start">

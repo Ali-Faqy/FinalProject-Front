@@ -38,10 +38,10 @@ function CategoryBody() {
           <CardCategory key={index} category={category} />
         ))}
       </div>
-      <button className="flex flex-row items-center justify-center gap-2 bg-[#ffffff] mt-20 text-black rounded-full border-green-200 text-green-700 hover:bg-green-50 gap-2 w-[200px] h-[40px] border-2 group">
+      <Link to="/categories"><button className="flex flex-row items-center justify-center gap-2 bg-[#ffffff] mt-20 text-black rounded-full border-green-200 text-green-700 hover:bg-green-50 gap-2 w-[200px] h-[40px] border-2 group">
         View All Categories
         <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-      </button>
+      </button></Link>
     </div>
   );
 }

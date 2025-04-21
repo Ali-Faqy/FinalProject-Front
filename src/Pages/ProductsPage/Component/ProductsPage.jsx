@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import Navication from "../../HomePage/Component/Navication.jsx";
 import HeroBackGround from "../../CategoriesPage/Component/HeroBackGround.jsx";
 import NoImage from "/src/assets/NoImage.jpg";
-import React from 'react';
+import React from "react";
 import {
   ChevronRight,
   Search,
@@ -10,7 +10,6 @@ import {
   List,
   Star,
   Heart,
-  ShoppingBag,
   ChevronLeft,
   X,
   SlidersHorizontal,
@@ -22,13 +21,19 @@ import { Slider } from "../../UI/Slider.jsx";
 import { Separtor } from "../../UI/Separtor.jsx";
 import { Checkbox } from "../../UI/Checkbox.jsx";
 import { Switch } from "../../UI/Switch.jsx";
-import {getAllProducts, getAllCategories, getAllBrands, InsertProductIntoCart} from "../Code/Product_data.js";
+import {
+  getAllProducts,
+  getAllCategories,
+  getAllBrands,
+  InsertProductIntoCart,
+  InsertProductIntoWishlist,
+} from "../Code/Product_data.js";
 
 function ProductsPage() {
   const userId = localStorage.getItem("userId");
-    if (!userId) {
-        <Link to="/signIn"></Link>
-    }
+  if (!userId) {
+    <Link to="/signIn"></Link>;
+  }
 
   const [viewMode, setViewMode] = useState("grid");
   const [priceRange, setPriceRange] = useState([0, 1500]);
@@ -46,7 +51,9 @@ function ProductsPage() {
 
   const getDriveThumbnail = (url) => {
     const match = url.match(/\/d\/([^/]+)\//);
-    return match ? `https://drive.google.com/thumbnail?id=${match[1]}` : NoImage;
+    return match
+      ? `https://drive.google.com/thumbnail?id=${match[1]}`
+      : NoImage;
   };
 
   const fetchProducts = async () => {
@@ -66,7 +73,9 @@ function ProductsPage() {
         category: `Category ${product.category_id}`, // Adjust as needed
         discount: product.offer_percentage,
         featured: false, // Adjust based on your logic
-        new: new Date(product.added_at) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // Mark as new if added in the last 30 days
+        new:
+          new Date(product.added_at) >
+          new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // Mark as new if added in the last 30 days
       }));
       setProducts(mappedProducts);
     }
@@ -79,7 +88,6 @@ function ProductsPage() {
       const mappedCategories = data.map((category) => ({
         id: category.category_id,
         name: category.category_name,
-
       }));
       setCategories(mappedCategories);
     }
@@ -114,14 +122,12 @@ function ProductsPage() {
     const matchesCategory =
       !selectedCategory || product.category === selectedCategory;
     const matchesBrand = !selectedBrand || product.brand === selectedBrand;
-    const matchesPrice =product.price >= priceRange[0] && product.price <= priceRange[1];
+    const matchesPrice =
+      product.price >= priceRange[0] && product.price <= priceRange[1];
     // const matchesInStock = !inStockOnly || product.inStock;
     // const matchesOnSale = !onSaleOnly || product.discount > 0;
     return (
-      matchesSearch &&
-        matchesCategory &&
-        matchesBrand &&
-        matchesPrice
+      matchesSearch && matchesCategory && matchesBrand && matchesPrice
       //   matchesInStock,
       // matchesOnSale
     );
@@ -471,13 +477,20 @@ function ProductsPage() {
                     <div className="relative">
                       <div className="aspect-square relative overflow-hidden">
                         <img
-                          src={product.image && product.image.trim() !== "" ? getDriveThumbnail(product.image) : NoImage}
+                          src={
+                            product.image && product.image.trim() !== ""
+                              ? getDriveThumbnail(product.image)
+                              : NoImage
+                          }
                           alt={product.name}
                           className="object-cover w-full h-full transition-all duration-500 group-hover:scale-110"
                         />
                       </div>
                       <div className="absolute top-3 right-3 flex flex-col gap-2">
-                        <button className="h-8 w-8 rounded-full bg-white/90 text-[#a4a4a4] hover:bg-white hover:text-red-500 shadow-sm flex items-center justify-center">
+                        <button onClick={() => {
+                                  InsertProductIntoWishlist(userId, product.id);
+                                }}
+                        className="h-8 w-8 rounded-full bg-white/90 text-[#a4a4a4] hover:bg-white hover:text-red-500 shadow-sm flex items-center justify-center">
                           <Heart className="h-4 w-4" />
                         </button>
                       </div>
@@ -556,7 +569,7 @@ function ProductsPage() {
                         className="w-full mt-4 bg-teal-600 hover:bg-teal-700 text-white py-2 rounded-md"
                         disabled={!product.inStock}
                         onClick={() => {
-                          const quantity = 1; 
+                          const quantity = 1;
                           InsertProductIntoCart(userId, product.id, quantity);
                         }}
                       >
@@ -576,7 +589,11 @@ function ProductsPage() {
                     <div className="flex flex-col sm:flex-row">
                       <div className="relative w-full sm:w-[200px] h-[200px]">
                         <img
-                          src={product.image && product.image.trim() !== "" ? getDriveThumbnail(product.image) : NoImage}
+                          src={
+                            product.image && product.image.trim() !== ""
+                              ? getDriveThumbnail(product.image)
+                              : NoImage
+                          }
                           alt={product.name}
                           className="object-cover w-full h-full"
                         />
@@ -655,18 +672,27 @@ function ProductsPage() {
                           </div>
 
                           <div className="flex gap-2">
-                            <button className="h-9 w-9 rounded-full border border-teal-600/20 text-[#a4a4a4] hover:text-red-500 hover:bg-red-500/10 flex items-center justify-center">
+                            <button onClick={() => {
+                                  InsertProductIntoWishlist(userId, product.id);
+                                }}
+                            className="h-9 w-9 rounded-full border border-teal-600/20 text-[#a4a4a4] hover:text-red-500 hover:bg-red-500/10 flex items-center justify-center">
                               <Heart className="h-4 w-4" />
                             </button>
                             <button
                               className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-md"
                               disabled={!product.inStock}
-
                               onClick={() => {
                                 const quantity = 1;
-                                console.log("Product added to cart:", product.id);
+                                console.log(
+                                  "Product added to cart:",
+                                  product.id
+                                );
                                 console.log("Product added to cart:", userId);
-                                InsertProductIntoCart(userId, product.id, quantity);
+                                InsertProductIntoCart(
+                                  userId,
+                                  product.id,
+                                  quantity
+                                );
                               }}
                             >
                               Add to Cart

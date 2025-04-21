@@ -2,9 +2,36 @@ import { Link } from "react-router-dom";
 import Navication from "../../HomePage/Component/Navication.jsx";
 import HeroBackGround from "./HeroBackGround.jsx";
 import { ChevronRight } from "lucide-react";
-import categories from "/src/Pages/CategoriesPage/code/data.js";
 import CardProduct from "../../HomePage/Component/CardProduct.jsx";
+import getAllCategoriesWithProducts from "/src/Pages/CategoriesPage/code/data.js";
+import { useEffect, useState } from "react";
+
 function CategoriesPage() {
+  const [apiData, setApiData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getAllCategoriesWithProducts();
+      setApiData(data);
+    };
+    fetchData();
+  }, []);
+
+  const categories = apiData.map((category) => ({
+    categoryId: category.category_id,
+    name: category.category_name,
+    tools: (category.products).map((product) => ({
+      id: product.product_id,
+      name: product.product_name,
+      price: product.selling_price,
+      tag: product.company_name,
+      description: product.description,
+      rating: product.product_rating,
+      availability: product.availability_status,
+      image: product.attachments?.[0],
+    })),
+  }));
+
   return (
     <div className="min-h-screen w-full flex flex-col">
       <Navication />
@@ -29,18 +56,19 @@ function CategoriesPage() {
           High-quality tools for all your farming needs
         </p>
       </HeroBackGround>
-      {/* Categories Section */}
+
       {categories.map((category, index) => (
         <div key={index}>
           <h2 className="text-2xl font-bold text-black/60 pl-[25px] pt-[25px] m-0">
             {category.name}
           </h2>
-          {/* Grid Layout for Products */}
+
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 p-5">
             {category.tools.map((tool, toolIndex) => (
               <CardProduct key={toolIndex} product={tool} />
             ))}
           </div>
+
           <div className="flex justify-center my-8">
             <button className="group flex items-center gap-2 px-4 py-2 rounded-full border border-green-500 bg-white text-sm font-medium text-green-600 shadow-sm transition-all hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2">
               Show more
