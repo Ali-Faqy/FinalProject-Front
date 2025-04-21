@@ -6,46 +6,65 @@ import image10 from "../../../assets/image10.png";
 import EmptyCart from "./EmptyCart.jsx";
 function CartItems() {
   const { userId } = useParams();
-  const [items, setItems] = useState([{
-    id: 1,
-    name: "Product 1",
-    price: 100,
-    quantity: 1,
-    brand: "Brand A",
-    image: "",
-  },
-  {
-    id: 2,
-    name: "Product 2",
-    price: 50,
-    quantity: 1,
-    brand: "Brand B",
-    image: "",
-  },
-  {
-    id: 3,
-    name: "Product 3",
-    price: 30,
-    quantity: 1,
-    brand: "Brand C",
-    image: "",
-  },
-  {
-    id: 4,
-    name: "Product 4",
-    price: 30,
-    quantity: 1,
-    brand: "Brand D",
-    image: "",
-  },]);
+  const [items, setItems] = useState([
+    {
+      id: 1,
+      name: "Product 1",
+      price: 100,
+      quantity: 1,
+      brand: "Brand A",
+      discount: 20,
+      quantityAvailable: 5,
+      image: "",
+    },
+    {
+      id: 2,
+      name: "Product 2",
+      price: 50,
+      quantity: 1,
+      brand: "Brand B",
+      discount: 10,
+      quantityAvailable: 3,
+      image: "",
+    },
+    {
+      id: 3,
+      name: "Product 3",
+      price: 30,
+      quantity: 1,
+      brand: "Brand C",
+      discount: 5,
+      quantityAvailable: 10,
+      image: "",
+    },
+    {
+      id: 4,
+      name: "Product 4",
+      price: 30,
+      quantity: 1,
+      brand: "Brand D",
+      discount: 0,
+      quantityAvailable: 8,
+      image: "",
+    },
+  ]);
 
   const increaseQuantity = (id) => {
-    setItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-      )
-    );
+    setItems((prevItems) => {
+      return prevItems.map((item) => {
+        if (item.id === id) {
+          if (item.quantity < item.quantityAvailable) {
+            return { ...item, quantity: item.quantity + 1 };
+          } else {
+            alert("Maximum quantity available in this product is " + item.quantityAvailable);
+          }
+        }
+        return item;
+      });
+    });
   };
+  
+  
 
   const decreaseQuantity = (id) => {
     setItems((prevItems) =>
@@ -61,10 +80,13 @@ function CartItems() {
     setItems((prevItems) => prevItems.filter((item) => item.id !== id));
   };
 
-  const subtotal = items.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  );
+  const subtotal = items.reduce((acc, item) => {
+    const discountedPrice = item.discount > 0
+      ? item.price * (1 - item.discount / 100)
+      : item.price;
+    return acc + discountedPrice * item.quantity;
+  }, 0);
+  
   const shippingEstimate = 20; // Static shipping estimate for now
   const taxEstimate = subtotal * 0.1; // Example: 10% tax
 
@@ -119,9 +141,28 @@ function CartItems() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-[50px] h-[120px] mr-5 items-center justify-center w-[100px]">
-                  <h3 className="text-lg font-semibold text-black m-0 text-center">
-                    ${item.price * item.quantity}
-                  </h3>
+                  <div>
+                    {item.discount > 0 ? (
+                      <div className="flex items-center gap-2">
+                        <p className="font-bold text-lg text-teal-600">
+                          $
+                          {(
+                            item.price *
+                            (1 - item.discount / 100) *
+                            item.quantity
+                          ).toFixed(2)}
+                        </p>
+                        <p className="text-sm text-[#a4a4a4] line-through">
+                          ${(item.price * item.quantity).toFixed(2)}
+                        </p>
+                      </div>
+                    ) : (
+                      <p className="font-bold text-lg text-teal-600">
+                        ${(item.price * item.quantity).toFixed(2)}
+                      </p>
+                    )}
+                  </div>
+
                   <div
                     onClick={() => removeItem(item.id)}
                     className="flex flex-row items-center justify-center gap-1 group hover:cursor-pointer hover:bg-red-100 rounded-md"
@@ -164,12 +205,14 @@ function CartItems() {
             ${total.toFixed(2)}
           </p>
         </div>
-        <Link to={`/checkout/${userId}`}><button
-          className="bg-black text-white rounded-md h-[50px] w-[90%] ml-[20px] hover:bg-muted-foreground transition-colors"
-          onClick={print}
-        >
-          Proceed to Checkout
-        </button></Link>
+        <Link to={`/checkout/${userId}`}>
+          <button
+            className="bg-black text-white rounded-md h-[50px] w-[90%] ml-[20px] hover:bg-muted-foreground transition-colors"
+            onClick={print}
+          >
+            Proceed to Checkout
+          </button>
+        </Link>
         <p className="text-center text-sm text-muted-foreground m-0">
           Secure checkout powered by Stripe
         </p>
