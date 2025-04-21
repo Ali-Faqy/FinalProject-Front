@@ -39,7 +39,8 @@ function SignIn() {
       setUser(user);
   
       if (user.isDefined) {
-        navigate("/home", { state: { userId: user.userId } });
+        localStorage.setItem("userId", user.userId);
+        navigate("/home");
       } else {
         alert("Invalid login credentials.");
       }

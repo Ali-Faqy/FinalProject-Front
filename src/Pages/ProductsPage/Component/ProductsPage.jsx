@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import Navication from "../../HomePage/Component/Navication.jsx";
 import HeroBackGround from "../../CategoriesPage/Component/HeroBackGround.jsx";
 import NoImage from "/src/assets/NoImage.jpg";
-
+import React from 'react';
 import {
   ChevronRight,
   Search,
@@ -22,9 +22,14 @@ import { Slider } from "../../UI/Slider.jsx";
 import { Separtor } from "../../UI/Separtor.jsx";
 import { Checkbox } from "../../UI/Checkbox.jsx";
 import { Switch } from "../../UI/Switch.jsx";
-import {getAllProducts, getAllCategories, getAllBrands} from "../Code/Product_data.js";
+import {getAllProducts, getAllCategories, getAllBrands, InsertProductIntoCart} from "../Code/Product_data.js";
 
 function ProductsPage() {
+  const userId = localStorage.getItem("userId");
+    if (!userId) {
+        <Link to="/signIn"></Link>
+    }
+
   const [viewMode, setViewMode] = useState("grid");
   const [priceRange, setPriceRange] = useState([0, 1500]);
   const [showFilters, setShowFilters] = useState(false);
@@ -39,6 +44,11 @@ function ProductsPage() {
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
 
+  const getDriveThumbnail = (url) => {
+    const match = url.match(/\/d\/([^/]+)\//);
+    return match ? `https://drive.google.com/thumbnail?id=${match[1]}` : NoImage;
+  };
+
   const fetchProducts = async () => {
     const data = await getAllProducts();
     if (data) {
@@ -47,7 +57,7 @@ function ProductsPage() {
         id: product.product_id,
         name: product.product_name,
         price: product.selling_price,
-        image: product.attachments[0] || NoImage,
+        image: product.attachments[0],
         inStock: product.availability_status,
         rating: product.product_rating,
         reviews: product.number_of_users_rating_product,
@@ -461,7 +471,7 @@ function ProductsPage() {
                     <div className="relative">
                       <div className="aspect-square relative overflow-hidden">
                         <img
-                          src={product.image && product.image.trim() !== "" ? product.image : NoImage}
+                          src={product.image && product.image.trim() !== "" ? getDriveThumbnail(product.image) : NoImage}
                           alt={product.name}
                           className="object-cover w-full h-full transition-all duration-500 group-hover:scale-110"
                         />
@@ -545,6 +555,10 @@ function ProductsPage() {
                       <button
                         className="w-full mt-4 bg-teal-600 hover:bg-teal-700 text-white py-2 rounded-md"
                         disabled={!product.inStock}
+                        onClick={() => {
+                          const quantity = 1; 
+                          InsertProductIntoCart(userId, product.id, quantity);
+                        }}
                       >
                         Add to Cart
                       </button>
@@ -562,7 +576,7 @@ function ProductsPage() {
                     <div className="flex flex-col sm:flex-row">
                       <div className="relative w-full sm:w-[200px] h-[200px]">
                         <img
-                          src={product.image || "/placeholder.svg"}
+                          src={product.image && product.image.trim() !== "" ? getDriveThumbnail(product.image) : NoImage}
                           alt={product.name}
                           className="object-cover w-full h-full"
                         />
@@ -647,6 +661,13 @@ function ProductsPage() {
                             <button
                               className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-md"
                               disabled={!product.inStock}
+
+                              onClick={() => {
+                                const quantity = 1;
+                                console.log("Product added to cart:", product.id);
+                                console.log("Product added to cart:", userId);
+                                InsertProductIntoCart(userId, product.id, quantity);
+                              }}
                             >
                               Add to Cart
                             </button>

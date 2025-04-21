@@ -5,7 +5,7 @@ import { Separtor } from "../../UI/Separtor.jsx";
 import image10 from "../../../assets/image10.png";
 import EmptyCart from "./EmptyCart.jsx";
 function CartItems() {
-    const { userId } = useParams();
+  const { userId } = useParams();
   const [items, setItems] = useState([{
     id: 1,
     name: "Product 1",

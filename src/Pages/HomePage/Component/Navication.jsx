@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
-import getUserNameAndEmail from "../Code/Navication_data.js";
+import {getUserNameAndEmail, getNumberOfCartItem} from "../Code/Navication_data.js";
 import {
   Tractor,
   User,
@@ -11,12 +11,18 @@ import {
   Truck,
 } from "lucide-react";
 
-function Navigation({ userId }) {
+function Navigation() {
+  const userId = localStorage.getItem("userId");
+    if (!userId) {
+        <Link to="/signIn"></Link>
+    }
+    
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
-  let numberOfItemsCart = 3;
 
   const [userData, setUserData] = useState({ userName: "", userEmail: "" });
+  const [numberOfItemsCart, setNumberOfCartItem] = useState(0);
+
   const fetchUserData = async () => {
     try {
       const data = await getUserNameAndEmail(userId);
@@ -29,11 +35,26 @@ function Navigation({ userId }) {
       console.error("Fetch error:", error);
     }
   };
+
+  const fetchNumberOfCartItem = async () => {
+    try {
+      const data = await getNumberOfCartItem(userId);
+      const cartItem = {
+        "user_id": data.user_id,
+        "numberOfItemsCart": data.product_count
+      }
+      setNumberOfCartItem(cartItem.numberOfItemsCart);
+    } catch (error) {
+      console.error("Fetch error:", error);
+    }
+  };
+
+  
   
     // Fetch user data from the API
     useEffect(() => {
       fetchUserData();
-      console.log(userData.userName, userData.userEmail);
+      fetchNumberOfCartItem();
     }, []);
     
 
@@ -68,7 +89,7 @@ function Navigation({ userId }) {
           <Link to="/home"><button className="text-gray-700 hover:text-green-600 transition duration-300 text-lg font-medium transition-colors">
             Home
           </button></Link>
-          <Link to="/Products"> <button className="text-gray-700 hover:text-green-600 transition duration-300 text-lg font-medium transition-colors">
+          <Link to="/Products" state={{userId}}> <button className="text-gray-700 hover:text-green-600 transition duration-300 text-lg font-medium transition-colors">
             Products
           </button></Link>
           <Link to="/categories"><button className="text-gray-700 hover:text-green-600 transition duration-300 text-lg font-medium transition-colors">
@@ -125,7 +146,6 @@ function Navigation({ userId }) {
 
                   <Link
                     to="/"
-                    href="#"
                     className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     <Truck className="mr-3 h-5 w-5 text-gray-500" />
@@ -134,7 +154,6 @@ function Navigation({ userId }) {
 
                   <Link
                     to="/"
-                    href="#"
                     className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     <Settings className="mr-3 h-5 w-5 text-gray-500" />
@@ -143,9 +162,10 @@ function Navigation({ userId }) {
 
                   <div className="border-t-2"></div>
 
-                  <Link
+                  <Link onClick={() => {
+                    localStorage.removeItem("userId");
+                  }}
                     to="/"
-                    href="#"
                     className="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
                   >
                     <LogOut className="mr-3 h-5 w-5 text-red-500" />

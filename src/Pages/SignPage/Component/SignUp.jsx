@@ -18,6 +18,50 @@ function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  // const isValidEmail = (email) => {
+  //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //   return emailRegex.test(email);
+  // };
+
+  // const handleSignIn = async () => {
+  //   if (!email || !password || !name) {
+  //     alert("Please fill in all fields.");
+  //     return;
+  //   }
+
+  //   if (!isValidEmail(email)) {
+  //     alert("Please enter a valid email address.");
+  //     return;
+  //   }
+
+  //   try {
+  //     const response = await fetch("http://localhost:8080/signup", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         name,
+  //         email,
+  //         password,
+  //       }),
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error("Network response was not ok");
+  //     }
+
+  //     const data = await response.json();
+  //     if (data.success) {
+  //       alert("Sign up successful! You can now log in.");
+  //     } else {
+  //       alert("Sign up failed. Please try again.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Fetch error:", error);
+  //   }
+
+  // };
   return (
     <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-gray-50 to-gray-100">
       <Link
@@ -125,13 +169,11 @@ function SignUp() {
         
           </div>
 
-          <div className="flex justify-end mb-8">
-            <button className="text-teal-600 hover:text-teal-800 text-sm font-medium transition-colors duration-300">
-              Forgot Your Password?
-            </button>
-          </div>
-          <button className="w-full h-12 rounded-lg bg-teal-700 text-white font-medium hover:bg-teal-800 transition-all duration-300 transform hover:translate-y-[-2px] shadow-md">
-            SIGN IN
+        
+          <button 
+          // onClick={handleSignUp}
+          className="w-full h-12 rounded-lg bg-teal-700 text-white font-medium hover:bg-teal-800 transition-all duration-300 transform hover:translate-y-[-2px] shadow-md">
+            SIGN UP
           </button>
           <div className="mt-6 text-center md:hidden">
             <p className="text-gray-500 mb-2">Don't have an account?</p>

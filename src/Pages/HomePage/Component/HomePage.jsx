@@ -4,19 +4,20 @@ import ProductBody from "./ProductBody.jsx";
 import CategoryBody from "./CategoryBody.jsx";
 import SocialMedia from "./SocialMedia.jsx";
 import Contact from "../../MainPage/Component/Contact.jsx";
-import { useLocation } from "react-router-dom";
 
 function HomePage() {
-  const location = useLocation();
-  const userId = location.state?.userId;
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+        <Link to="/signIn"></Link>
+    }
   return (
     <div className="bg-[#f8f5f0] h-screen w-screen">
-        <Navication userId={userId}/>
+        <Navication/>
         <Header />
-        <ProductBody userId={userId}/>
-        <CategoryBody userId={userId}/>
-        <SocialMedia userId={userId}/>
-        <Contact userId={userId}/>
+        <ProductBody/>
+        <CategoryBody/>
+        <SocialMedia/>
+        <Contact/>
     </div>
     );
 }

@@ -3,13 +3,18 @@ import imagee from "/src/assets/image10.png";
 import { ChevronRight } from "lucide-react";
 
 function CardCategory({ category }) {
+  const getDriveThumbnail = (url) => {
+      const match = url.match(/\/d\/([^/]+)\//);
+      return match ? `https://drive.google.com/thumbnail?id=${match[1]}` : NoImage;
+    };
+
   const { id, name, description, image, items } = category;
   return (
     <div
       className="h-[300px] w-[600px] rounded-2xl shadow-xl hover:shadow-2xl transition-all relative group"
       style={{
         backgroundImage: `url(${
-          image && image.trim() !== "" ? image : imagee
+          image && image.trim() !== "" ? getDriveThumbnail(image) : imagee
         })`,
       }}
     >

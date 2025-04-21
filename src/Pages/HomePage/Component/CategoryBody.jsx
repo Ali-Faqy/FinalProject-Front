@@ -1,37 +1,28 @@
 import { Link } from "react-router-dom";
 import { Leaf, ChevronRight } from "lucide-react";
 import CardCategory from "./CardCategory.jsx";
+import { useState, useEffect } from "react";
+import {getAllCategories} from "../Code/Category_data.js";
+
 function CategoryBody() {
-  const categorys = [
-    {
-      id: 1,
-      name: "Gardening Tools",
-      description: "Essential tools for garden maintenance and plant care",
-      image: "",
-      items: 42,
-    },
-    {
-      id: 2,
-      name: "Irrigation Systems",
-      description: "Water management solutions for all farm sizes",
-      image: "",
-      items: 28,
-    },
-    {
-      id: 3,
-      name: "Harvesting Equipment",
-      description: "Tools designed for efficient crop collection",
-      image: "",
-      items: 35,
-    },
-    {
-      id: 4,
-      name: "Farming Machinery",
-      description: "Heavy-duty equipment for large-scale farming",
-      image: "",
-      items: 19,
-    },
-  ];
+    const [categorys, setCategories] = useState([]);
+    const fetchCategories = async () => {
+      const data = await getAllCategories();
+      if(data) {
+        const mappedCategories = data.map((category) => ({
+          id: category.category_id,
+          name: category.category_name,
+          description: category.description,
+          image: category.photo,
+          items: category.product_count,
+        }));
+        setCategories(mappedCategories);
+      }
+    };
+    useEffect(() => {
+      fetchCategories();
+    }
+    , []);
   return (
     <div className="w-full h-[1200px] mt-[50px] flex flex-col items-center justify-start gap-4">
       <div className="h-[64px] w-[64px] bg-amber-200 rounded-full flex justify-center items-center mt-[50px]">

@@ -2,6 +2,10 @@ import { Link } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 
 function SocialMedia() {
+  const userId = localStorage.getItem("userId");
+    if (!userId) {
+        <Link to="/signIn"></Link>
+    }
   return (
     <div className="flex w-full h-[500px] justify-center items-center">
       <div className="w-[60%] h-[75%] rounded-3xl bg-white/10 backdrop-blur-md flex flex-col justify-start items-start gap-5 shadow-2xl shadow-black/50">
