@@ -137,15 +137,15 @@ function Navigation() {
                   </div>
 
                   <Link
-                    to="/"
+                    to="/my-profile"
                     className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     <UserCircle className="mr-3 h-5 w-5 text-gray-500" />
                     My Profile
                   </Link>
-
+                    
                   <Link
-                    to="/"
+                    to="/my-orders"
                     className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     <Truck className="mr-3 h-5 w-5 text-gray-500" />
@@ -153,7 +153,7 @@ function Navigation() {
                   </Link>
 
                   <Link
-                    to="/"
+                    to="/settings"
                     className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     <Settings className="mr-3 h-5 w-5 text-gray-500" />
