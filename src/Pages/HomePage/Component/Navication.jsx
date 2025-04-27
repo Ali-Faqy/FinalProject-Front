@@ -109,75 +109,15 @@ function Navigation() {
               {numberOfItemsCart}
             </div>
           </div></Link>
-          <div className="relative" ref={dropdownRef}>
-            <div
-              className="h-[48px] w-[48px] rounded-full flex justify-center items-center hover:bg-green-100 cursor-pointer"
-              onClick={() => {
-                setIsOpen(!isOpen);
-              }}
-            >
+          <Link to="/profile">
+            <div className="h-[48px] w-[48px] rounded-full flex justify-center items-center hover:bg-green-100 cursor-pointer">
               <User className="h-[24px] w-[24px] text-black" />
             </div>
+            </Link>
 
-            {isOpen && (
-              <div className="absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-[999]">
-                <div
-                  className="py-1"
-                  role="menu"
-                  aria-orientation="vertical"
-                  aria-labelledby="options-menu"
-                >
-                  <div className="flex flex-col gap-2 items-start justify-start px-4 py-2 border-b">
-                    <span className='text-sm font-medium text-gray-900"'>
-                      {userData.userName}
-                    </span>
-                    <span className="text-xs text-gray-500 truncate">
-                      {userData.userEmail || "No email provided"}
-                    </span>
-                  </div>
-
-                  <Link
-                    to="/my-profile"
-                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    <UserCircle className="mr-3 h-5 w-5 text-gray-500" />
-                    My Profile
-                  </Link>
-                    
-                  <Link
-                    to="/my-orders"
-                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    <Truck className="mr-3 h-5 w-5 text-gray-500" />
-                    My Orders
-                  </Link>
-
-                  <Link
-                    to="/settings"
-                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    <Settings className="mr-3 h-5 w-5 text-gray-500" />
-                    Settings
-                  </Link>
-
-                  <div className="border-t-2"></div>
-
-                  <Link onClick={() => {
-                    localStorage.removeItem("userId");
-                  }}
-                    to="/"
-                    className="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
-                  >
-                    <LogOut className="mr-3 h-5 w-5 text-red-500" />
-                    Sign out
-                  </Link>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>
-    </div>
   );
 }
 
