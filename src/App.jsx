@@ -13,6 +13,9 @@ import AccountSettings from './Pages/Profile/Component/AccountSettings';
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import { useEffect, useState } from 'react';
 import AI from './Pages/AI/Component/AI.jsx';
+import Dashboard from './Pages/Admin/Component/page.jsx';
+import ToolsPage from './Pages/Admin/Component/toolsPage.jsx';
+import AddTool from './Pages/Admin/Component/AddTool.jsx';
 function App() {
  const [userId, setUserId] = useState(localStorage.getItem("userId"));
 
@@ -42,6 +45,9 @@ function App() {
             <Route path="/profile" element={<UserDashboard />} />
             <Route path="/accountSettings" element={<AccountSettings />} />
             <Route path="/AI" element={<AI />} />
+            <Route path="/admin" element={<Dashboard />} />
+            <Route path="/tools" element={<ToolsPage />} />
+            <Route path="/tools/add" element={<AddTool />} />
             </>
         ) : (
           <>
