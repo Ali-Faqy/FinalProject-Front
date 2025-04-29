@@ -21,6 +21,7 @@ import ToolsPage from './Pages/Admin/Component/toolsPage.jsx';
 import AddTool from './Pages/Admin/Component/AddTool.jsx';
 import CustomerPage from './Pages/Admin/Component/CustomerPage.jsx';
 import ViewCustomerInfo from './Pages/Admin/Component/ViewCustomerInfo.jsx';
+import InventoryPage from './Pages/Admin/Component/InventoryPage.jsx';
 
 function App() {
  const [userId, setUserId] = useState(localStorage.getItem("userId"));
@@ -58,6 +59,7 @@ function App() {
             <Route path="/customers/:customerId" element={<ViewCustomerInfo />} />
             <Route path="/checkout/success" element={<SuccessPage />} />
             <Route path="/checkout/failed" element={<FailedPage />} />
+            <Route path="/inventory" element={<InventoryPage />} />
 
             </>
         ) : (

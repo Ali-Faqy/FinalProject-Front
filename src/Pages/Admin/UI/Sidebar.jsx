@@ -228,7 +228,7 @@ export default function Sidebar({ currentColorTheme, theme, isLoaded }) {
             </div>
           </Link>
 
-          <Link to="/admin">
+          <Link to="/inventory">
             <div
               className={`transform transition-transform duration-700 ${isLoaded ? "translate-x-0" : "-translate-x-10"} delay-450`}
               onMouseEnter={() => setHoverState("inventory", true)}

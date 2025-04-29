@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { ArrowLeft, ImageIcon, Loader2, Save, X } from "lucide-react";
 import Layout from "../UI/Layout";
 import PageContainer from "../UI/PageContainer";
-import {Link} from "react-router-dom";
+
 export default function AddTool() {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -60,7 +60,6 @@ export default function AddTool() {
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500));
       alert("Product added successfully!");
-      // navigate("/products");
     } catch (error) {
       console.error("Error adding product:", error);
       alert("Failed to add product. Please try again.");
@@ -76,12 +75,11 @@ export default function AddTool() {
         description="Add a new product to your inventory"
       >
         <Link to="/tools">
-        <button
-          className="flex items-center text-gray-600 hover:text-gray-900 mb-6 transition-colors"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          <span>Back to Products</span>
-        </button></Link>
+          <button className="flex items-center text-gray-600 hover:text-gray-900 mb-6 transition-colors">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            <span>Back to Products</span>
+          </button>
+        </Link>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Information */}
@@ -128,6 +126,13 @@ export default function AddTool() {
                         ].includes(field)
                           ? "number"
                           : "text"
+                      }
+                      min={
+                        field === "year_of_manufacture"
+                          ? "1900"
+                          : ["original_price", "selling_price", "offer_percentage", "quantity"].includes(field)
+                          ? "0"
+                          : undefined
                       }
                       id={field}
                       name={field}
@@ -195,47 +200,37 @@ export default function AddTool() {
               <h2 className="text-lg font-semibold text-gray-800 mb-4">
                 Product Description
               </h2>
-              {["description", "How_use_it", "uses", "specifications"].map(
-                (field) => (
-                  <div key={field}>
-                    <label
-                      htmlFor={
-                        field === "How_use_it"
-                          ? "How use it"
-                          : field === "uses"
-                          ? "Uses"
-                          : field === "specifications"
-                          ? "Specifications (key:value format, one per line)"
-                          : field
-                      }
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      {field.charAt(0).toUpperCase() + field.slice(1)}{" "}
-                      {field === "description" && (
-                        <span className="text-red-500">*</span>
-                      )}
-                    </label>
-                    <textarea
-                      id={field}
-                      name={field}
-                      value={formData[field]}
-                      onChange={handleChange}
-                      rows={5}
-                      required={field === "description"}
-                      className="w-full border border-gray-200 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                      placeholder={
-                        field === "description"
-                          ? "Enter product description"
-                          : field === "How_use_it"
-                          ? "List how to use product"
-                          : field === "uses"
-                          ? "List uses of product"
-                          : "engine: 4-cylinder\nhorsepower: 1200 HP\nweight: 2000 kg"
-                      }
-                    />
-                  </div>
-                )
-              )}
+              {["description", "how_use_it", "uses", "specifications"].map((field) => (
+                <div key={field}>
+                  <label
+                    htmlFor={field}
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    {field.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())}
+                    {field === "description" && (
+                      <span className="text-red-500"> *</span>
+                    )}
+                  </label>
+                  <textarea
+                    id={field}
+                    name={field}
+                    value={formData[field]}
+                    onChange={handleChange}
+                    rows={5}
+                    required={field === "description"}
+                    className="w-full border border-gray-200 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    placeholder={
+                      field === "description"
+                        ? "Enter product description"
+                        : field === "how_use_it"
+                        ? "List how to use product"
+                        : field === "uses"
+                        ? "List uses of product"
+                        : "engine: 4-cylinder\nhorsepower: 1200 HP\nweight: 2000 kg"
+                    }
+                  />
+                </div>
+              ))}
             </div>
           </div>
 
@@ -277,8 +272,7 @@ export default function AddTool() {
                 </label>
               </div>
               <p className="text-xs text-gray-500 mt-1">
-                Upload product images. The first image will be used as the main
-                product image.
+                Upload product images. The first image will be used as the main product image.
               </p>
             </div>
           </div>
