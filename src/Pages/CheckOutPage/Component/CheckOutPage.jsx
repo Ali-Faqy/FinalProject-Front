@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import Navication from "../../HomePage/Component/Navication.jsx";
 import HeroBackGround from "../../CategoriesPage/Component/HeroBackGround.jsx";
 import ContactForm from "./ContactForm.jsx";
@@ -10,8 +10,10 @@ import {
   ChevronRight,
   CreditCard,
 } from "lucide-react";
+import CartSummary from "./CartSummary.jsx";
 function CheckOutPage() {
   const { userId } = useParams();
+  const location = useLocation();
   const [step, setStep] = useState("contact");
   const renderStepForm = () => {
     switch (step) {
@@ -25,6 +27,8 @@ function CheckOutPage() {
         return null;
     }
   };
+  const { cart, total } = location.state || { cart: [], total: 0 };
+
 
   return (
     <div className=" h-screen w-screen overflow-x-hidden">
@@ -65,7 +69,10 @@ function CheckOutPage() {
         <div className="flex flex-col w-[60%] bg-white rounded-lg border-2 shadow-sm ml-[50px] overflow-auto">
         {renderStepForm()}
         </div>
-        <div className="flex flex-col border-2 w-[30%] h-[60%] bg-white rounded-lg border shadow-sm gap-4"></div>
+        {/*Cart item*/}
+        <div className="flex flex-col border-2 w-[30%] h-[80%] bg-white rounded-lg border shadow-sm gap-4">
+        <CartSummary cart={cart} total={total} />
+        </div>
       </div>
     </div>
   );

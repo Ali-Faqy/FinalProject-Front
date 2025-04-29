@@ -7,6 +7,9 @@ import CategoriesPage from "./Pages/CategoriesPage/Component/CategoriesPage.jsx"
 import ProductsPage from "./Pages/ProductsPage/Component/ProductsPage.jsx";
 import CartPage from "./Pages/CartPage/Component/CartPage.jsx";
 import CheckOutPage from './Pages/CheckOutPage/Component/CheckOutPage.jsx';
+import SuccessPage from './Pages/CheckOutPage/Component/SuccessPage.jsx';
+import FailedPage from './Pages/CheckOutPage/Component/FailedPage.jsx';
+
 import ErrorPage from "./Pages/ErrorPage/ErrorPage.jsx";
 import UserDashboard from "./Pages/Profile/Component/UserDashboard.jsx";
 import AccountSettings from './Pages/Profile/Component/AccountSettings';
@@ -53,6 +56,9 @@ function App() {
             <Route path="/tools/add" element={<AddTool />} />
             <Route path="/customers" element={<CustomerPage />} />
             <Route path="/customers/:customerId" element={<ViewCustomerInfo />} />
+            <Route path="/checkout/success" element={<SuccessPage />} />
+            <Route path="/checkout/failed" element={<FailedPage />} />
+
             </>
         ) : (
           <>

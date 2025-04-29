@@ -205,7 +205,8 @@ function CartItems() {
             ${total.toFixed(2)}
           </p>
         </div>
-        <Link to={`/checkout/${userId}`}>
+        <Link to={`/checkout/${userId}`}
+        state={{ cart: items, total }}>
           <button
             className="bg-black text-white rounded-md h-[50px] w-[90%] ml-[20px] hover:bg-muted-foreground transition-colors"
             onClick={print}
