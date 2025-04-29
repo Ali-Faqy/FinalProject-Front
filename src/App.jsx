@@ -16,6 +16,9 @@ import AI from './Pages/AI/Component/AI.jsx';
 import Dashboard from './Pages/Admin/Component/page.jsx';
 import ToolsPage from './Pages/Admin/Component/toolsPage.jsx';
 import AddTool from './Pages/Admin/Component/AddTool.jsx';
+import CustomerPage from './Pages/Admin/Component/CustomerPage.jsx';
+import ViewCustomerInfo from './Pages/Admin/Component/ViewCustomerInfo.jsx';
+
 function App() {
  const [userId, setUserId] = useState(localStorage.getItem("userId"));
 
@@ -48,6 +51,8 @@ function App() {
             <Route path="/admin" element={<Dashboard />} />
             <Route path="/tools" element={<ToolsPage />} />
             <Route path="/tools/add" element={<AddTool />} />
+            <Route path="/customers" element={<CustomerPage />} />
+            <Route path="/customers/:customerId" element={<ViewCustomerInfo />} />
             </>
         ) : (
           <>
