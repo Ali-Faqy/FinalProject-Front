@@ -1,13 +1,12 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
-import { useParams } from "react-router-dom";
 import { User, Truck, CreditCard, CheckCircle2 } from "lucide-react";
 
 function ContactForm({onContinue}) {
+    const { user_id } = 1;
     return(
         <>
         <div className="flex flex-row justify-between items-center w-full h-[100px] ">
-            <div className="flex flex-col items-center pl-[30px]">
+            <div className="flex flex-col items-center pl-5">
               <div className="flex items-center justify-center h-10 w-10 bg-black rounded-2xl">
                 <User className="h-6 w-6 text-white" />
               </div>
@@ -17,19 +16,13 @@ function ContactForm({onContinue}) {
               <div className="flex items-center justify-center h-10 w-10 bg-gray-200 rounded-2xl">
                 <Truck className="h-6 w-6 text-muted-foreground" />
               </div>
-              <span className="text-sm text-muted-foreground">Shipping</span>
+              <span className="text-sm text-muted-foreground">Payment</span>
             </div>
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center pr-5">
               <div className="flex items-center justify-center h-10 w-10 bg-gray-200 rounded-2xl">
                 <CreditCard className="h-6 w-6 text-muted-foreground" />
               </div>
-              <span className="text-sm text-muted-foreground">Payment</span>
-            </div>
-            <div className="flex flex-col items-center pr-[30px]">
-              <div className="flex items-center justify-center h-10 w-10 bg-gray-200 rounded-2xl">
-                <CheckCircle2 className="h-6 w-6 text-muted-foreground" />
-              </div>
-              <span className="text-sm text-muted-foreground">Confirm</span>
+              <span className="text-sm text-muted-foreground">Shipping</span>
             </div>
           </div>
           <h2 className="text-2xl font-semibold m-0 pl-[30px] pt-[30px]">
@@ -56,9 +49,9 @@ function ContactForm({onContinue}) {
             />
           </form>
           <div className="flex flex-row justify-between mt-10 ml-[30px] mr-[30px] mb-2">
-            <button className="border-2 rounded-md w-[100px] h-[50px] font-semibold hover:bg-muted-foreground">
+            <Link to={`/cart/${user_id}`}><button className="border-2 rounded-md w-[100px] h-[50px] font-semibold hover:bg-muted-foreground">
               Back
-            </button>
+            </button></Link>
             <button className="rounded-md w-[100px] h-[50px] font-semibold bg-black text-white hover:text-black hover:bg-white hover:border-2"
             onClick={onContinue}>
               Continue

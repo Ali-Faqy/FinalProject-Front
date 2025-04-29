@@ -3,13 +3,10 @@ import { Link } from "react-router-dom";
 import { useParams, useLocation } from "react-router-dom";
 import Navication from "../../HomePage/Component/Navication.jsx";
 import HeroBackGround from "../../CategoriesPage/Component/HeroBackGround.jsx";
-import ContactForm from "./ContactForm.jsx";
-import ShippingForm from "./ShippingForm.jsx"
+import ShippingForm from "./ShippingForm.jsx";
 import PaymentForm from "./PaymentForm.jsx";
-import {
-  ChevronRight,
-  CreditCard,
-} from "lucide-react";
+import ContactForm from "./ContactForm.jsx";
+import { ChevronRight, CreditCard } from "lucide-react";
 import CartSummary from "./CartSummary.jsx";
 function CheckOutPage() {
   const { userId } = useParams();
@@ -18,17 +15,30 @@ function CheckOutPage() {
   const renderStepForm = () => {
     switch (step) {
       case "contact":
-        return <ContactForm onContinue={() => setStep("shipping")} />;
-      case "shipping":
-        return <ShippingForm onContinue={() => setStep("payment")} />;
+        return <ContactForm onContinue={() => setStep("payment")} />;
       case "payment":
-        return <PaymentForm onContinue={() => setStep("confirm")} />;
+        return (
+          <PaymentForm
+            cart={cart}
+            onContinue={(next) =>
+              setStep(next === "contact" ? "contact" : "shipping")
+            }
+          />
+        );
+      case "shipping":
+        return (
+          <ShippingForm
+            onContinue={(next) =>
+              setStep(next === "payment" ? "payment" : "shipping")
+            }
+          />
+        );
       default:
         return null;
     }
   };
+  
   const { cart, total } = location.state || { cart: [], total: 0 };
-
 
   return (
     <div className=" h-screen w-screen overflow-x-hidden">
@@ -67,11 +77,11 @@ function CheckOutPage() {
       </HeroBackGround>
       <div className="flex flex-row gap-12 items-start justify-start w-full h-[650px] pt-[50px]">
         <div className="flex flex-col w-[60%] bg-white rounded-lg border-2 shadow-sm ml-[50px] overflow-auto">
-        {renderStepForm()}
+          {renderStepForm()}
         </div>
         {/*Cart item*/}
         <div className="flex flex-col border-2 w-[30%] h-[80%] bg-white rounded-lg border shadow-sm gap-4">
-        <CartSummary cart={cart} total={total} />
+          <CartSummary cart={cart} total={total} />
         </div>
       </div>
     </div>
