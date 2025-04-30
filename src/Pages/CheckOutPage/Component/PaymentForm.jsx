@@ -12,8 +12,7 @@ function PaymentForm({ onContinue, cart }) {
   
       const data = await response.json();
       console.log("Checkout session:", data);
-      // maybe redirect user to checkout page, e.g.:
-      // window.location.href = data.url;
+      window.location.href = data.url;
   
     } catch (err) {
       console.error("Checkout failed:", err);

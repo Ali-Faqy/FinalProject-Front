@@ -20,6 +20,7 @@ function SignIn() {
   };
   
   const handleSignIn = async () => {
+    console.log("SignIn clicked")
     if (!email || !password) {
       alert("Please fill in both email and password.");
       return;
@@ -31,12 +32,14 @@ function SignIn() {
     }
   
     try {
+      console.log("Fetching data...")
       const data = await IsUserDefined(email, password);
       const user = {
         "isDefined": data.IsUserDefined,
         "userId": data.user_id,
       };
       setUser(user);
+      console.log("User data:", user);
       localStorage.setItem("userId", user.userId);
 
       window.dispatchEvent(new Event("storage"));

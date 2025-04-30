@@ -1,53 +1,39 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { Separtor } from "../../UI/Separtor.jsx";
 import image10 from "../../../assets/image10.png";
 import EmptyCart from "./EmptyCart.jsx";
+import {getAllProductInCart} from "../Data/getAllProductInCart.js";
+
 function CartItems() {
   const { userId } = useParams();
-  const [items, setItems] = useState([
-    {
-      id: 1,
-      name: "Product 1",
-      price: 100,
-      quantity: 1,
-      brand: "Brand A",
-      discount: 20,
-      quantityAvailable: 5,
-      image: "",
-    },
-    {
-      id: 2,
-      name: "Product 2",
-      price: 50,
-      quantity: 1,
-      brand: "Brand B",
-      discount: 10,
-      quantityAvailable: 3,
-      image: "",
-    },
-    {
-      id: 3,
-      name: "Product 3",
-      price: 30,
-      quantity: 1,
-      brand: "Brand C",
-      discount: 5,
-      quantityAvailable: 10,
-      image: "",
-    },
-    {
-      id: 4,
-      name: "Product 4",
-      price: 30,
-      quantity: 1,
-      brand: "Brand D",
-      discount: 0,
-      quantityAvailable: 8,
-      image: "",
-    },
-  ]);
+  const [items, setItems] = useState([]);
+
+
+
+
+  const fetchProducts = async () => {
+      const data = await getAllProductInCart(2);
+      if (data) {
+        const updatedItems = data.map((item) => ({
+          id: item.id,
+          name: item.name,
+          brand: item.brand,
+          price: item.price,
+          image: item.image[0],
+          quantity: item.quantity,
+          quantityAvailable: item.quantityAvailable,
+          discount: item.discount,
+        }));
+        
+        setItems(updatedItems);
+      }
+    };
+    useEffect(() => {
+        fetchProducts();
+      }, []);
+
 
   const increaseQuantity = (id) => {
     setItems((prevItems) => {

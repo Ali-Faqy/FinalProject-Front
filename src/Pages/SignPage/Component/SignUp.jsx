@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import axios from "axios"; // Import axios for API requests
+import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 
 function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
@@ -58,12 +59,63 @@ function SignUp() {
               Welcome Back
             </h1>
             <div className="flex justify-center space-x-4 mb-8">
-              <button className="w-12 h-12 flex items-center justify-center rounded-full bg-teal-700 hover:bg-teal-800 transition-all duration-300 transform hover:scale-110 shadow-md">
-                <Mail className="h-5 w-5" />
-              </button>
-              <button className="w-12 h-12 flex items-center justify-center rounded-full bg-teal-700 hover:bg-teal-800 transition-all duration-300 transform hover:scale-110 shadow-md">
-                <Facebook className="h-5 w-5" />
-              </button>
+                {/* Google login inside Mail icon */}
+                <GoogleLogin
+                  onSuccess={async (credentialResponse) => {
+                    try {
+                      const res = await axios.post(
+                        "http://localhost:8000/users/google-login",
+                        {
+                          token: credentialResponse.credential,
+                        }
+                      );
+                      console.log("Backend response:", res.data);
+                    } catch (error) {
+                      console.error("Error during Google sign-up:", error);
+                    }
+                  }}
+                  onError={() => {
+                    console.log("Login Failed");
+                  }}
+                  render={(renderProps) => (
+                    <button
+                      onClick={renderProps.onClick}
+                      className="w-12 h-12 flex items-center justify-center rounded-full bg-red-600 hover:bg-red-700 transition-all duration-300 transform hover:scale-110 shadow-md"
+                    >
+                      <Mail className="h-5 w-5 text-white" />
+                    </button>
+                  )}
+                />
+              {/* Facebook login with icon */}
+              <FacebookLogin
+                appId="717835217478182"
+                autoLoad={false}
+                fields="name,email"
+                callback={async (response) => {
+                  try {
+                    const res = await axios.post(
+                      "http://localhost:8000/users/facebook-login",
+                      {
+                        accessToken: response.accessToken,
+                      }
+                    );
+                    console.log(
+                      "Facebook login response from backend:",
+                      res.data
+                    );
+                  } catch (error) {
+                    console.error("Facebook login failed:", error);
+                  }
+                }}
+                render={(renderProps) => (
+                  <button
+                    onClick={renderProps.onClick}
+                    className="w-12 h-12 flex items-center justify-center rounded-full bg-teal-700 hover:bg-teal-800 transition-all duration-300 transform hover:scale-110 shadow-md"
+                  >
+                    <Facebook className="h-5 w-5 text-black" />
+                  </button>
+                )}
+              />
               <button className="w-12 h-12 flex items-center justify-center rounded-full bg-teal-700 hover:bg-teal-800 transition-all duration-300 transform hover:scale-110 shadow-md">
                 <Github className="h-5 w-5" />
               </button>
@@ -133,25 +185,6 @@ function SignUp() {
             >
               SIGN UP
             </button>
-
-            <div className="mt-6 text-center">
-              <GoogleLogin
-               onSuccess={async (credentialResponse) => {
-                try {
-                  const res = await axios.post("http://localhost:8000/users/google-login", {
-                    token: credentialResponse.credential, // ✅ MUST be `token`
-                  });
-                  console.log("Backend response:", res.data);
-                } catch (error) {
-                  console.error("Error during Google sign-up:", error);
-                }
-              }}
-              
-                onError={() => {
-                  console.log("Login Failed");
-                }}
-              />
-            </div>
 
             <div className="mt-6 text-center md:hidden">
               <p className="text-gray-500 mb-2">Don't have an account?</p>

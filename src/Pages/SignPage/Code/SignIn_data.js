@@ -17,6 +17,7 @@ async function IsUserDefined(userEmail, userPassword) {
         } else {
           alert(data.message || "Sign-in failed. Incorrect in Email or password.");
         }
+        console.log("Response data:", data);
       } catch (error) {
         console.error("Error during sign-in:", error);
         alert("An error occurred. Please try again later.");
