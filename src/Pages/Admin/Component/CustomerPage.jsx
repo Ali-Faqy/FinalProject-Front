@@ -3,6 +3,7 @@ import PageContainer from "../UI/PageContainer";
 import { Download, Filter, Search } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { getAllCustomer } from "../Data/CustomerData.js";
 
 export default function CustomerPage() {
   const [filterOpen, setFilterOpen] = useState(false);
@@ -14,35 +15,70 @@ export default function CustomerPage() {
   });
   const [filteredCustomers, setFilteredCustomers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [customers, setCustomers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const customers = [
-    { id: 1, name: "John Smith", email: "john.smith@example.com", phone: "(555) 123-4567", location: "New York, USA", orders: 12, spent: 45600, lastOrder: "2023-04-15", status: "Active", avatar: "/placeholder.svg?height=40&width=40" },
-    { id: 2, name: "Sarah Johnson", email: "sarah.johnson@example.com", phone: "(555) 234-5678", location: "Chicago, USA", orders: 8, spent: 175000, lastOrder: "2023-04-14", status: "Active", avatar: "/placeholder.svg?height=40&width=40" },
-    { id: 3, name: "Michael Brown", email: "michael.brown@example.com", phone: "(555) 345-6789", location: "Los Angeles, USA", orders: 5, spent: 12500, lastOrder: "2023-04-12", status: "Active", avatar: "/placeholder.svg?height=40&width=40" },
-    { id: 4, name: "Emily Davis", email: "emily.davis@example.com", phone: "(555) 456-7890", location: "Houston, USA", orders: 3, spent: 8200, lastOrder: "2023-04-10", status: "Inactive", avatar: "/placeholder.svg?height=40&width=40" },
-    { id: 5, name: "Robert Wilson", email: "robert.wilson@example.com", phone: "(555) 567-8901", location: "Phoenix, USA", orders: 7, spent: 32000, lastOrder: "2023-04-08", status: "Active", avatar: "/placeholder.svg?height=40&width=40" },
-    { id: 6, name: "Jennifer Taylor", email: "jennifer.taylor@example.com", phone: "(555) 678-9012", location: "Philadelphia, USA", orders: 4, spent: 45000, lastOrder: "2023-04-05", status: "Active", avatar: "/placeholder.svg?height=40&width=40" },
-    { id: 7, name: "David Miller", email: "david.miller@example.com", phone: "(555) 789-0123", location: "San Antonio, USA", orders: 2, spent: 5600, lastOrder: "2023-04-03", status: "Inactive", avatar: "/placeholder.svg?height=40&width=40" },
-    { id: 8, name: "Lisa Anderson", email: "lisa.anderson@example.com", phone: "(555) 890-1234", location: "San Diego, USA", orders: 6, spent: 18500, lastOrder: "2023-04-01", status: "Active", avatar: "/placeholder.svg?height=40&width=40" },
-  ];
+  const fetchCustomers = async () => {
+    try {
+      const response = await getAllCustomer();
+      if (!response) throw new Error("No customers found");
+      
+      const data = response.map((item) => ({
+        id: item.id,
+        name: item.name,
+        email: item.email,
+        phone: item.phone,
+        location: item.location,
+        orders: item.orders,
+        spent: item.spent,
+        lastOrder: item.lastOrder,
+        status: item.status == 0 ? "Inactive" : "Active",
+        avatar: item.avatar,
+      }));
+      
+      setCustomers(data);
+      setError(null);
+    } catch (err) {
+      console.error("Error fetching customers:", err);
+      setError("Failed to load customers. Please try again later.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  // Reset page when search or filter changes
+  useEffect(() => {
+    fetchCustomers();
+  }, []);
+
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, filters]);
 
-  // Filter logic
+  // Updated useEffect with customers dependency
   useEffect(() => {
     const filtered = customers.filter((customer) => {
-      if (searchTerm && !customer.name.toLowerCase().includes(searchTerm.toLowerCase())) return false;
-      if (filters.status && customer.status !== filters.status) return false;
-      if (filters.location && !customer.location.toLowerCase().includes(filters.location.toLowerCase())) return false;
-      if (filters.minSpent && customer.spent < parseFloat(filters.minSpent)) return false;
-      return true;
+      const matchesSearch = searchTerm 
+        ? customer.name.toLowerCase().includes(searchTerm.toLowerCase())
+        : true;
+      
+      const matchesStatus = filters.status
+        ? customer.status === filters.status
+        : true;
+      
+      const matchesLocation = filters.location
+        ? customer.location.toLowerCase().includes(filters.location.toLowerCase())
+        : true;
+      
+      const matchesMinSpent = filters.minSpent
+        ? customer.spent >= parseFloat(filters.minSpent)
+        : true;
+
+      return matchesSearch && matchesStatus && matchesLocation && matchesMinSpent;
     });
 
     setFilteredCustomers(filtered);
-  }, [searchTerm, filters]);
+  }, [searchTerm, filters, customers]); // Added customers to dependencies
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -68,6 +104,26 @@ export default function CustomerPage() {
         return "bg-gray-100 text-gray-800";
     }
   };
+
+  if (isLoading) {
+    return (
+      <Layout adminName="Ali Othman">
+        <PageContainer title="Customers" description="Loading...">
+          <div className="text-center py-8">Loading customers...</div>
+        </PageContainer>
+      </Layout>
+    );
+  }
+
+  if (error) {
+    return (
+      <Layout adminName="Ali Othman">
+        <PageContainer title="Customers" description="Error">
+          <div className="text-center py-8 text-red-500">{error}</div>
+        </PageContainer>
+      </Layout>
+    );
+  }
 
   return (
     <Layout adminName="Ali Othman">
@@ -187,38 +243,42 @@ export default function CustomerPage() {
         </div>
 
         {/* Pagination */}
-        <div className="mt-6 flex items-center justify-between">
-          <div className="text-sm text-gray-500">
-            Showing <span className="font-medium">{indexOfFirstCustomer + 1}</span> to{" "}
-            <span className="font-medium">{Math.min(indexOfLastCustomer, filteredCustomers.length)}</span> of{" "}
-            <span className="font-medium">{filteredCustomers.length}</span> customers
-          </div>
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
-              disabled={currentPage === 1}
-              className={`px-3 py-1 border border-gray-200 rounded-md text-gray-600 ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50"}`}
-            >
-              Previous
-            </button>
-            {[...Array(Math.min(5, totalPages))].map((_, index) => (
+        {filteredCustomers.length > 0 ? (
+          <div className="mt-6 flex items-center justify-between">
+            <div className="text-sm text-gray-500">
+              Showing <span className="font-medium">{indexOfFirstCustomer + 1}</span> to{" "}
+              <span className="font-medium">{Math.min(indexOfLastCustomer, filteredCustomers.length)}</span> of{" "}
+              <span className="font-medium">{filteredCustomers.length}</span> customers
+            </div>
+            <div className="flex items-center space-x-2">
               <button
-                key={index + 1}
-                onClick={() => setCurrentPage(index + 1)}
-                className={`px-3 py-1 rounded-md ${currentPage === index + 1 ? "bg-green-500 text-white" : "border border-gray-200 text-gray-600 hover:bg-gray-50"}`}
+                onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
+                disabled={currentPage === 1}
+                className={`px-3 py-1 border border-gray-200 rounded-md text-gray-600 ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50"}`}
               >
-                {index + 1}
+                Previous
               </button>
-            ))}
-            <button
-              onClick={() => currentPage < totalPages && setCurrentPage(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className={`px-3 py-1 border border-gray-200 rounded-md text-gray-600 ${currentPage === totalPages ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50"}`}
-            >
-              Next
-            </button>
+              {Array.from({ length: totalPages }, (_, index) => (
+                <button
+                  key={index + 1}
+                  onClick={() => setCurrentPage(index + 1)}
+                  className={`px-3 py-1 rounded-md ${currentPage === index + 1 ? "bg-green-500 text-white" : "border border-gray-200 text-gray-600 hover:bg-gray-50"}`}
+                >
+                  {index + 1}
+                </button>
+              ))}
+              <button
+                onClick={() => currentPage < totalPages && setCurrentPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className={`px-3 py-1 border border-gray-200 rounded-md text-gray-600 ${currentPage === totalPages ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50"}`}
+              >
+                Next
+              </button>
+            </div>
           </div>
-        </div>
+        ) : (
+          !isLoading && <div className="text-center py-8 text-gray-500">No customers found matching your criteria</div>
+        )}
       </PageContainer>
     </Layout>
   );
