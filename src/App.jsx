@@ -2,6 +2,7 @@ import './App.css';
 import MainPage from "./Pages/MainPage/Component/MainPage.jsx";
 import SignIn from "./Pages/SignPage/Component/SignIn.jsx";
 import SignUp from "./Pages/SignPage/Component/SignUp.jsx";
+import VerificationPage from "./Pages/SignPage/Component/VerificationPage.jsx";
 import HomePage from "./Pages/HomePage/Component/HomePage.jsx";
 import CategoriesPage from "./Pages/CategoriesPage/Component/CategoriesPage.jsx";
 import ProductsPage from "./Pages/ProductsPage/Component/ProductsPage.jsx";
@@ -40,6 +41,7 @@ function App() {
          <Route path="/" element={<MainPage />} />
         <Route path="/signIn" element={<SignIn />} />
         <Route path="/signUp" element={<SignUp />} />
+        <Route path="/verification" element={<VerificationPage />} />
 
        {userId ? (
           <>
@@ -60,6 +62,7 @@ function App() {
             <Route path="/checkout/success" element={<SuccessPage />} />
             <Route path="/checkout/failed" element={<FailedPage />} />
             <Route path="/inventory" element={<InventoryPage />} />
+
 
             </>
         ) : (

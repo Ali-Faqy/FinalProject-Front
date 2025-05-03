@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import {
   ArrowLeft,
@@ -12,14 +12,47 @@ import {
   User,
 } from "lucide-react";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
-import axios from "axios"; // Import axios for API requests
+import axios from "axios";
 import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
-
+import {checkUserDefined} from "../Code/SignUpData.js"
 function SignUp() {
+  const navigate = useNavigate();
+
+  
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const handleSignUp = async () => {
+
+    if (!email || !password || !name) {
+      alert("Please fill in both name and email and password.");
+      return;
+    }
+    if (!isValidEmail(email)) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+
+    try{
+      const data = await checkUserDefined(email);
+      if (data.IsUserDefined) {
+        alert("Email already exists. Please use a different email.");
+        return;
+      }
+    }
+    catch (error) {
+      console.error("Fetch error:", error);
+    }
+    navigate("/verification", { state: { name, email, password } });
+  };
+
 
   return (
     <GoogleOAuthProvider clientId="631245239192-8cek364mrcs3477aet7poiv7tj0kn39c.apps.googleusercontent.com">
@@ -180,7 +213,7 @@ function SignUp() {
             </div>
 
             <button
-              // onClick={handleSignUp}
+              onClick={handleSignUp}
               className="w-full h-12 rounded-lg bg-teal-700 text-white font-medium hover:bg-teal-800 transition-all duration-300 transform hover:translate-y-[-2px] shadow-md"
             >
               SIGN UP
