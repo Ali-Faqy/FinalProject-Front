@@ -246,7 +246,7 @@ export default function ViewCustomerInfo() {
                     <div className="bg-violet-100 p-2 rounded-full">
                       <ShoppingBag className="h-4 w-4 text-violet-600" />
                     </div>
-                    <p className="text-sm font-medium text-slate-500">Total Orders</p>
+                    <p className="text-sm font-medium text-slate-500 m-0">Total Orders</p>
                   </div>
                   <p className="text-2xl font-semibold text-slate-800">{customer.orders}</p>
                 </div>
@@ -255,7 +255,7 @@ export default function ViewCustomerInfo() {
                     <div className="bg-emerald-100 p-2 rounded-full">
                       <DollarSign className="h-4 w-4 text-emerald-600" />
                     </div>
-                    <p className="text-sm font-medium text-slate-500">Total Spent</p>
+                    <p className="text-sm font-medium text-slate-500 m-0">Total Spent</p>
                   </div>
                   <p className="text-2xl font-semibold text-slate-800">${customer.spent.toLocaleString()}</p>
                 </div>
@@ -264,7 +264,7 @@ export default function ViewCustomerInfo() {
                     <div className="bg-amber-100 p-2 rounded-full">
                       <Clock className="h-4 w-4 text-amber-600" />
                     </div>
-                    <p className="text-sm font-medium text-slate-500">Last Order</p>
+                    <p className="text-sm font-medium text-slate-500 m-0">Last Order</p>
                   </div>
                   <p className="text-2xl font-semibold text-slate-800">{customer.lastOrder}</p>
                 </div>
@@ -327,7 +327,7 @@ export default function ViewCustomerInfo() {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <Link to={`/orders/${order.id}`} className="text-violet-600 hover:text-violet-900 font-medium">
+                      <Link to={`/orders/${order.id}/view`} className="text-violet-600 hover:text-violet-900 font-medium">
                         View
                       </Link>
                     </td>

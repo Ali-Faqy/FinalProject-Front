@@ -23,6 +23,9 @@ import AddTool from './Pages/Admin/Component/AddTool.jsx';
 import CustomerPage from './Pages/Admin/Component/CustomerPage.jsx';
 import ViewCustomerInfo from './Pages/Admin/Component/ViewCustomerInfo.jsx';
 import InventoryPage from './Pages/Admin/Component/InventoryPage.jsx';
+import CustomerOrdersPage from './Pages/Admin/Component/CustomerOrdersPage.jsx';
+import ViewOrderCustomer from './Pages/Admin/Component/ViewOrderCustomer.jsx';
+import TrackCustomerOrder from './Pages/Admin/Component/TrackCustomerOrder.jsx';
 
 function App() {
  const [userId, setUserId] = useState(localStorage.getItem("userId"));
@@ -62,6 +65,9 @@ function App() {
             <Route path="/checkout/success" element={<SuccessPage />} />
             <Route path="/checkout/failed" element={<FailedPage />} />
             <Route path="/inventory" element={<InventoryPage />} />
+            <Route path="/orders" element={<CustomerOrdersPage />} />
+            <Route path="/orders/:id/view" element={<ViewOrderCustomer />} />
+            <Route path="/orders/:id/track" element={<TrackCustomerOrder />} />
 
 
             </>
