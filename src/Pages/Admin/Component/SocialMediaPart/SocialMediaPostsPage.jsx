@@ -238,29 +238,26 @@ export default function SocialMediaPostsPage() {
     setIsCreatingPost(true)
 
     try {
-      // Create FormData
       const formData = new FormData()
-      formData.append("user_id", user_id.toString())
-      formData.append("post_title", newPost.title)
-      formData.append("post_content", newPost.content)
-      formData.append("category", newPost.category)
 
-      // Add images
+      // ✅ This is perfect — send all post info in one key
+      formData.append("postData", JSON.stringify({
+        user_id: user_id,
+        post_title: newPost.title,
+        post_content: newPost.content,
+        category: newPost.category,
+      }))
+
+      // ✅ This is also perfect — send each image file under the same key
       newPost.images.forEach((file) => {
         formData.append("attachments", file)
       })
+      // Send request})
 
-      // Send to backend
       const response = await fetch("http://localhost:8000/posts/new", {
         method: "POST",
-        body: formData,
+        body: formData
       })
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      const result = await response.json()
 
       // Add new post to state
       const newPostObj = {
