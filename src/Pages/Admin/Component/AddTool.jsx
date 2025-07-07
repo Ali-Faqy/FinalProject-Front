@@ -17,21 +17,8 @@ export default function AddTool() {
     quantity: "",
     how_use_it: "",
     description: "",
-    category: "",
-    sub_category: "",
   });
 
-  const categories = [
-    "Tractors",
-    "Harvesters",
-    "Irrigation",
-    "Drones",
-    "Tools",
-    "Seeds",
-    "Fertilizers",
-    "Parts",
-    "Other",
-  ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -75,7 +62,7 @@ export default function AddTool() {
         description="Add a new product to your inventory"
       >
         <Link to="/tools">
-          <button className="flex items-center text-gray-600 hover:text-gray-900 mb-6 transition-colors">
+          <button className="flex items-center text-gray-600 hover:text-gray-900 mb-6 transition-colors" onClick={() => navigate(-1)}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             <span>Back to Products</span>
           </button>
@@ -149,47 +136,6 @@ export default function AddTool() {
                     />
                   </div>
                 ))}
-
-                <div>
-                  <label
-                    htmlFor="category"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Category <span className="text-red-500">*</span>
-                  </label>
-                  <select
-                    id="category"
-                    name="category"
-                    value={formData.category}
-                    onChange={handleChange}
-                    required
-                    className="w-full border border-gray-200 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  >
-                    <option value="">Select a category</option>
-                    {categories.map((category) => (
-                      <option key={category} value={category}>
-                        {category}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="sub_category"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Sub-category
-                  </label>
-                  <input
-                    type="text"
-                    id="sub_category"
-                    name="sub_category"
-                    value={formData.sub_category}
-                    onChange={handleChange}
-                    className="w-full border border-gray-200 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  />
-                </div>
               </div>
             </div>
           </div>
@@ -200,7 +146,7 @@ export default function AddTool() {
               <h2 className="text-lg font-semibold text-gray-800 mb-4">
                 Product Description
               </h2>
-              {["description", "how_use_it", "uses", "specifications"].map((field) => (
+              {["description", "uses", "specifications"].map((field) => (
                 <div key={field}>
                   <label
                     htmlFor={field}

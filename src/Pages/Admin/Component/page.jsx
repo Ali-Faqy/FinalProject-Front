@@ -1,5 +1,4 @@
-import { useRef, useEffect, useState } from "react";
-import React from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   CircleDollarSign,
@@ -10,58 +9,57 @@ import {
   TrendingDown,
   Users,
 } from "lucide-react";
+import { Line } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
 import Layout from "../UI/Layout";
 import PageContainer from "../UI/PageContainer";
 import { useTheme } from "../UI/theme-provider";
 import Image from "/src/assets/image10.png";
-import { getTotalRevenue, getTotalOrders, getTotalProductBuying } from "../Data/DashboardData.js";
+import {
+  getTotalRevenue,
+  getTotalOrders,
+  getTotalProductBuying,
+  getTotalUserJoin,
+  getLast3Order,
+  getTopSellingProducts,
+  getMonthlySales,
+} from "../Data/DashboardData.js";
+
+// Register Chart.js components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
 export default function Dashboard() {
-  const chartRef = useRef(null);
   const theme = useTheme();
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [totalRevenueChange, setTotalRevenueChange] = useState(0);
   const [totalOrders, setTotalOrders] = useState(0);
-  const [totalProducts, setTotalProducts] = useState(0);
-  const [totalCustomers, setTotalCustomers] = useState(0);
   const [totalOrdersChange, setTotalOrdersChange] = useState(0);
+  const [totalProducts, setTotalProducts] = useState(0);
   const [totalProductsChange, setTotalProductsChange] = useState(0);
+  const [totalCustomers, setTotalCustomers] = useState(0);
   const [totalCustomersChange, setTotalCustomersChange] = useState(0);
-
-
-  //   const adminId = localStorage.getItem("userId");
-  //     if (!adminId) {
-  //         <Link to="/signIn"></Link>
-  //     }
+  const [orders, setOrders] = useState([]);
+  const [topSellingProducts, setTopSellingProducts] = useState([]);
+  const [monthlySales, setMonthlySales] = useState([]);
 
   const adminName = "Ali Othman";
-  // Animate chart on scroll
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const chartBars = entry.target.querySelectorAll(".chart-bar");
-            chartBars.forEach((bar, index) => {
-              setTimeout(() => {
-                bar.style.height = bar.dataset.height || "0%";
-              }, index * 100);
-            });
-          }
-        });
-      },
-      { threshold: 0.5 }
-    );
-
-    if (chartRef.current) {
-      observer.observe(chartRef.current);
-    }
-
-    return () => {
-      if (chartRef.current) {
-        observer.unobserve(chartRef.current);
-      }
-    };
-  }, []);
 
   const fetchRevenue = async () => {
     const response = await getTotalRevenue();
@@ -69,147 +67,142 @@ export default function Dashboard() {
       const current = parseInt(response[0].total_revenue);
       const previous = parseInt(response[1].total_revenue);
       setTotalRevenue(current);
-      setTotalRevenueChange(
-        ((current - previous) / previous) * 100
-      );
+      setTotalRevenueChange(((current - previous) / previous) * 100);
     }
   };
-    const fetchTotalOrders = async () => {
-      const response = await getTotalOrders();
-      console.log(response);
-      if (response) {
-        const current = parseInt(response[0].total_orders);
-        const previous = parseInt(response[1].total_orders);
-        setTotalOrders(current);
-        setTotalOrdersChange(
-          ((current - previous) / previous) * 100
-        );
-      }
+
+  const fetchTotalOrders = async () => {
+    const response = await getTotalOrders();
+    if (response) {
+      const current = parseInt(response[0].total_orders);
+      const previous = parseInt(response[1].total_orders);
+      setTotalOrders(current);
+      setTotalOrdersChange(((current - previous) / previous) * 100);
+    }
   };
+
   const fetchTotalProductBuying = async () => {
     const response = await getTotalProductBuying();
-    console.log(response);
     if (response) {
       const current = parseInt(response[0].total_products_bought);
       const previous = parseInt(response[1].total_products_bought);
       setTotalProducts(current);
-      setTotalProductsChange(
-        ((current - previous) / previous) * 100
-      );
+      setTotalProductsChange(((current - previous) / previous) * 100);
     }
-};
+  };
 
-  
+  const fetchTotalUsersJoin = async () => {
+    const response = await getTotalUserJoin();
+    if (response) {
+      const current = parseInt(response[0].total_users);
+      const previous = parseInt(response[1].total_users);
+      setTotalCustomers(current);
+      setTotalCustomersChange(((current - previous) / previous) * 100);
+    }
+  };
+
+  const fetchLast3Orders = async () => {
+    const response = await getLast3Order();
+    if (response) {
+      const orders = response.map((order) => ({
+        order_id: order.order_id,
+        order_status: order.order_status,
+        total_price: order.total_price,
+        user_name: order.user_name,
+      }));
+      setOrders(orders);
+    }
+  };
+
+  const fetchTopSellingProducts = async () => {
+    const response = await getTopSellingProducts();
+    if (response) {
+      const products = response.map((product) => ({
+        id: product.product_id,
+        name: product.product_name,
+        category: product.category_name,
+        price: product.selling_price,
+        stock: product.remaining_quantity,
+        sales: product.total_quantity - product.remaining_quantity,
+      }));
+      setTopSellingProducts(products);
+    }
+  };
+
+  const fetchMonthlySales = async () => {
+    const response = await getMonthlySales();
+    if (response) {
+      setMonthlySales(response);
+    }
+  };
+
   useEffect(() => {
     fetchRevenue();
     fetchTotalOrders();
     fetchTotalProductBuying();
+    fetchTotalUsersJoin();
+    fetchLast3Orders();
+    fetchTopSellingProducts();
+    fetchMonthlySales();
   }, []);
 
+  const chartData = {
+    labels: monthlySales.map((item) => item.month),
+    datasets: [
+      {
+        label: "Sales ($)",
+        data: monthlySales.map((item) => item.sales),
+        borderColor: "rgb(34, 197, 94)",
+        backgroundColor: "rgba(34, 197, 94, 0.2)",
+        fill: true,
+        tension: 0.4,
+        pointBackgroundColor: "rgb(34, 197, 94)",
+        pointBorderColor: "#fff",
+        pointHoverBackgroundColor: "#fff",
+        pointHoverBorderColor: "rgb(34, 197, 94)",
+      },
+    ],
+  };
 
-  const orders = [
-    {
-      order_id: 45782,
-      order_status: "Shipped",
-      total_price: 24500,
-      user_name: "Ali Othman",
+  // Chart.js options
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false, // Hide legend for simplicity
+      },
+      tooltip: {
+        backgroundColor: "rgba(0, 0, 0, 0.8)",
+        titleFont: { size: 14 },
+        bodyFont: { size: 12 },
+        callbacks: {
+          label: (context) => `$${context.parsed.y.toLocaleString()}`,
+        },
+      },
     },
-    {
-      order_id: 45781,
-      order_status: "Processing",
-      total_price: 175000,
-      user_name: "Amer Daglies",
+    scales: {
+      x: {
+        grid: { display: false },
+        title: {
+          display: true,
+          text: "Month",
+          color: "#374151", // gray-700
+        },
+      },
+      y: {
+        grid: { color: "rgba(0, 0, 0, 0.1)" },
+        title: {
+          display: true,
+          text: "Sales ($)",
+          color: "#374151", // gray-700
+        },
+        ticks: {
+          callback: (value) => `$${value.toLocaleString()}`,
+        },
+      },
     },
-    {
-      order_id: 45780,
-      order_status: "Delivered",
-      total_price: 8750,
-      user_name: "Tasnim Ayed",
-    },
-  ];
-
-  const topSellingProducts = [
-    {
-      id: 1,
-      name: "Compact Tractor X200",
-      category: "Tractors",
-      price: 24500,
-      stock: 15,
-      sales: 124,
-    },
-    {
-      id: 2,
-      name: "Harvester Pro 5000",
-      category: "Harvesters",
-      price: 175000,
-      stock: 8,
-      sales: 42,
-    },
-    {
-      id: 3,
-      name: "Irrigation System",
-      category: "Irrigation",
-      price: 8750,
-      stock: 32,
-      sales: 87,
-    },
-    {
-      id: 4,
-      name: "Tractor X100",
-      category: "Tractors",
-      price: 15000,
-      stock: 20,
-      sales: 200,
-    },
-    {
-      id: 5,
-      name: "Seeder Pro 3000",
-      category: "Seeders",
-      price: 5000,
-      stock: 50,
-      sales: 300,
-    },
-    {
-      id: 6,
-      name: "Plow Master 400",
-      category: "Plows",
-      price: 12000,
-      stock: 10,
-      sales: 150,
-    },
-    {
-      id: 7,
-      name: "Fertilizer Spreader",
-      category: "Fertilizers",
-      price: 3000,
-      stock: 25,
-      sales: 180,
-    },
-    {
-      id: 8,
-      name: "Cultivator X500",
-      category: "Cultivators",
-      price: 8000,
-      stock: 12,
-      sales: 90,
-    },
-    {
-      id: 9,
-      name: "Irrigation Pump",
-      category: "Irrigation",
-      price: 2000,
-      stock: 40,
-      sales: 250,
-    },
-    {
-      id: 10,
-      name: "Harvesting Machine",
-      category: "Harvesters",
-      price: 50000,
-      stock: 5,
-      sales: 60,
-    },
-  ];
+  };
 
   return (
     <Layout adminName={adminName}>
@@ -217,40 +210,40 @@ export default function Dashboard() {
         title="Dashboard"
         description="Welcome back, here's what's happening with your agricultural equipment store today."
       >
-        {/* Stats Cards with animations */}
+        {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
           <StatCard
             title="Total Revenue"
-            value={`$${totalRevenue}`}
-            change={`${totalRevenueChange}`}
+            value={`$${totalRevenue.toLocaleString()}`}
+            change={`${totalRevenueChange.toFixed(1)}`}
             icon={<CircleDollarSign className="h-5 w-5" />}
             delay="100ms"
           />
           <StatCard
             title="Total Orders"
-            value={totalOrders}
-            change={`${totalOrdersChange}`}
+            value={totalOrders.toLocaleString()}
+            change={`${totalOrdersChange.toFixed(1)}`}
             icon={<ShoppingCart className="h-5 w-5" />}
             delay="200ms"
           />
           <StatCard
             title="Total Products"
-            value={totalProducts}
-            change={`${totalProductsChange}`}
+            value={totalProducts.toLocaleString()}
+            change={`${totalProductsChange.toFixed(1)}`}
             icon={<Package className="h-5 w-5" />}
             delay="300ms"
           />
           <StatCard
             title="Total Customers"
-            value={totalCustomers}
-            change={`${totalCustomersChange}`}
+            value={totalCustomers.toLocaleString()}
+            change={`${totalCustomersChange.toFixed(1)}`}
             icon={<Users className="h-5 w-5" />}
             delay="400ms"
           />
         </div>
 
         {/* Chart and Recent Orders */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6 h-[350px]">
           <div
             className="bg-white rounded-xl shadow-sm p-6 border border-gray-200 lg:col-span-2 opacity-100 animate-fadeInUp relative overflow-hidden group"
             style={{ animationDelay: "600ms" }}
@@ -264,68 +257,15 @@ export default function Dashboard() {
                 <button className="px-3 py-1 text-sm bg-green-100 text-green-600 rounded-lg transition-colors duration-300 hover:bg-opacity-80">
                   Monthly
                 </button>
-                <button className="px-3 py-1 text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-colors duration-300">
-                  Yearly
-                </button>
               </div>
             </div>
-            <div className="h-64 w-full" ref={chartRef}>
-              {/* Animated chart using divs */}
-              <div className="flex items-end justify-between h-48 w-full">
-                <div className="flex flex-col items-center">
-                  <div
-                    className="w-12 bg-green-500 rounded-t-md h-0 chart-bar"
-                    data-height="60%"
-                    style={{ height: "0%", transition: "height 1s ease-out" }}
-                  ></div>
-                  <span className="text-xs mt-1 text-gray-500">Jan</span>
-                </div>
-                <div className="flex flex-col items-center">
-                  <div
-                    className="w-12 bg-green-500 rounded-t-md h-0 chart-bar"
-                    data-height="40%"
-                    style={{ height: "0%", transition: "height 1s ease-out" }}
-                  ></div>
-                  <span className="text-xs mt-1 text-gray-500">Feb</span>
-                </div>
-                <div className="flex flex-col items-center">
-                  <div
-                    className="w-12 bg-green-500 rounded-t-md h-0 chart-bar"
-                    data-height="70%"
-                    style={{ height: "0%", transition: "height 1s ease-out" }}
-                  ></div>
-                  <span className="text-xs mt-1 text-gray-500">Mar</span>
-                </div>
-                <div className="flex flex-col items-center">
-                  <div
-                    className="w-12 bg-green-500 rounded-t-md h-0 chart-bar"
-                    data-height="50%"
-                    style={{ height: "0%", transition: "height 1s ease-out" }}
-                  ></div>
-                  <span className="text-xs mt-1 text-gray-500">Apr</span>
-                </div>
-                <div className="flex flex-col items-center">
-                  <div
-                    className="w-12 bg-green-500 rounded-t-md h-0 chart-bar"
-                    data-height="80%"
-                    style={{ height: "0%", transition: "height 1s ease-out" }}
-                  ></div>
-                  <span className="text-xs mt-1 text-gray-500">May</span>
-                </div>
-                <div className="flex flex-col items-center">
-                  <div
-                    className="w-12 bg-green-500 rounded-t-md h-0 chart-bar"
-                    data-height="90%"
-                    style={{ height: "0%", transition: "height 1s ease-out" }}
-                  ></div>
-                  <span className="text-xs mt-1 text-gray-500">Jun</span>
-                </div>
-              </div>
+            <div className="h-64 w-full">
+              <Line data={chartData} options={chartOptions} />
             </div>
           </div>
           {/* Recent Orders */}
           <div
-            className="bg-white rounded-xl shadow-sm p-6 border border-gray-200 opacity-100 animate-fadeInUp relative overflow-hidden group"
+            className="bg-white rounded-xl shadow-sm p-6 border border-gray-200 opacity-100 animate-fadeInUp relative overflow-hidden group overflow-y-scroll"
             style={{ animationDelay: "700ms" }}
           >
             <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-emerald-400 opacity-0 group-hover:opacity-5 transition-opacity duration-500"></div>
@@ -334,7 +274,7 @@ export default function Dashboard() {
                 Recent Orders
               </h3>
               <Link
-                href="/orders"
+                to="/orders"
                 className={`text-sm ${theme.accent} hover:underline transition-colors duration-300`}
               >
                 View All
@@ -354,7 +294,7 @@ export default function Dashboard() {
                     <div className="ml-3 flex-1">
                       <p className="text-sm font-medium text-gray-800">{order.user_name}</p>
                       <p className="text-xs text-gray-500">
-                        `Order #{order.order_id} • ${order.total_price}`
+                        Order #{order.order_id} • ${order.total_price.toLocaleString()}
                       </p>
                     </div>
                     {order.order_status === "Shipped" && (
@@ -454,17 +394,17 @@ export default function Dashboard() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        ${product.price}
+                        ${product.price.toLocaleString()}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        {product.stock}
+                        {product.stock.toLocaleString()}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        {product.sales}
+                        {product.sales.toLocaleString()}
                       </div>
                     </td>
                   </tr>
@@ -496,7 +436,7 @@ function StatCard({ title, value, change, icon, delay }) {
           {value}
         </span>
         {parseFloat(change) >= 0 ? (
-          <TrendingUp className="h-3 w-3 mr-1 text-green-500 " />
+          <TrendingUp className="h-3 w-3 mr-1 text-green-500" />
         ) : (
           <TrendingDown className="h-3 w-3 mr-1 text-red-500" />
         )}
@@ -505,7 +445,7 @@ function StatCard({ title, value, change, icon, delay }) {
             parseFloat(change) >= 0 ? "text-green-600" : "text-red-600"
           }
         >
-          {Math.abs(parseFloat(change)).toFixed(0)}%
+          {Math.abs(parseFloat(change)).toFixed(1)}%
         </span>
       </div>
       <div className="text-xs text-gray-500 mt-1">Compared to last month</div>
@@ -533,4 +473,3 @@ function ProgressBar({
     </div>
   );
 }
-

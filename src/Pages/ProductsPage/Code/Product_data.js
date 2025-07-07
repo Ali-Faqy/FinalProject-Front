@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify';
 export async function getAllProducts() {
     let data;
     try {
@@ -42,7 +43,22 @@ export async function getAllBrands() {
       return data;
 }
 
-export async function InsertProductIntoCart(userId, ProductId, quantity) {
+export async function getProductById(product_id) {
+  let data;
+  try {
+      const response = await fetch(`http://127.0.0.1:8000/products/${product_id}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch product');
+      }
+      data = await response.json();
+      
+    } catch (error) {
+      console.error('Error:', error);
+    }
+    return data;
+}
+
+export async function InsertProductIntoCart(userId, ProductId, quantity, name) {
   try {
     const response = await fetch("http://127.0.0.1:8000/cart/add", {
       method: "POST",
@@ -50,7 +66,7 @@ export async function InsertProductIntoCart(userId, ProductId, quantity) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        user_id: userId,          // ✅ Correct key
+        user_id: userId,
         product_id: ProductId,
         quantity: quantity,
       }),
@@ -59,9 +75,10 @@ export async function InsertProductIntoCart(userId, ProductId, quantity) {
     const data = await response.json();
 
     if (response.ok) {
-      alert("Product added successful!");
+      toast.success(`${name} added to cart successfully!`, { containerId: "other" });
+      return data;
     } else {
-      alert(data.message || "Product added failed.");
+      toast.error(`${name} added to cart failed!`, { containerId: "other" });
     }
   } catch (error) {
     console.error("Error during Product added", error);
@@ -69,7 +86,7 @@ export async function InsertProductIntoCart(userId, ProductId, quantity) {
   }
 }
 
-export async function InsertProductIntoWishlist(userId, productId) {
+export async function InsertProductIntoWishlist(userId, productId, name) {
   try {
     const response = await fetch("http://127.0.0.1:8000/wishlist/add", {
       method: "POST",
@@ -82,11 +99,15 @@ export async function InsertProductIntoWishlist(userId, productId) {
     const data = await response.json();
 
     if (response.ok) {
-      alert("Insert product into Wishlist successful!");
-      console.log(data);
-      return data;
+      if(data.message === "Product added to wishlist successfully"){
+        toast.success(`${name} added to Wishlist successfully!`, { containerId: "other" });
+      }
+      else if (data.message === "Already in wishlist"){
+        toast.success(`${name} already in your wishlist!`, { containerId: "other" });
+      }
+      
     } else {
-      alert(data.message || "Insert product into Wishlist failed.");
+      toast.error(`${name} added to Wishlist failed!`, { containerId: "other" });
     }
   } catch (error) {
     console.error("Error during Insert product into Wishlist:", error);

@@ -1,7 +1,9 @@
 import {Link} from "react-router-dom"
 import { CheckCircle } from "lucide-react"
+import { useState } from "react";
 
 export default function FailedPage() {
+  const [userId, setUserId] = useState(localStorage.getItem("userId"));
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
@@ -12,8 +14,8 @@ export default function FailedPage() {
         </div>
         <h1 className="text-2xl font-bold mb-2 m-0 text-black">Payment Failed!</h1>
         <p className="text-gray-600 mb-6">Sorry!. Your payment has been processed Failed.</p>
-        <Link to="/checkout">
-          <button className="w-[50%] bg-black text-white rounded-xl">Go Home</button>
+        <Link to={`/cart/${userId}`}>
+        <button className="w-[50%] bg-black text-white rounded-xl">Go Home</button>
         </Link>
       </div>
     </div>

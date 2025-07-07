@@ -18,7 +18,6 @@ export async function userSignUp(userEmail, userName, password) {
         console.log("Response data:", data);
       } catch (error) {
         console.error("Error during sign-in:", error);
-        alert("An error occurred. Please try again later.");
       }
     };
 
@@ -42,6 +41,5 @@ export async function userSignUp(userEmail, userName, password) {
             console.log("Response data:", data);
           } catch (error) {
             console.error("Error during sign-in:", error);
-            alert("An error occurred. Please try again later.");
           }
         };

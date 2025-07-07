@@ -42,3 +42,63 @@ export async function getTotalProductBuying() {
     }
     return data;
 }
+
+export async function getTotalUserJoin() {
+  let data;
+  try {
+      const response = await fetch(`http://localhost:8000/users/total-users/month`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch total user join');
+      }
+      data = await response.json();
+      
+    } catch (error) {
+      console.error('Error:', error);
+    }
+    return data;
+}
+
+export async function getLast3Order() {
+  let data;
+  try {
+      const response = await fetch(`http://localhost:8000/orders/last-3-orders`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch last 3 orders');
+      }
+      data = await response.json();
+      
+    } catch (error) {
+      console.error('Error:', error);
+    }
+    return data;
+}
+
+export async function getTopSellingProducts() {
+  let data;
+  try {
+      const response = await fetch(`http://localhost:8000/products/top-selling-products`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch top selling product');
+      }
+      data = await response.json();
+      
+    } catch (error) {
+      console.error('Error:', error);
+    }
+    return data;
+}
+
+export async function getMonthlySales() {
+  let data;
+  try {
+      const response = await fetch(`http://127.0.0.1:8000/orders/sales/last-6-months`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch top selling analytic data');
+      }
+      data = await response.json();
+      
+    } catch (error) {
+      console.error('Error:', error);
+    }
+    return data;
+}

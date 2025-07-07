@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {userSignUp} from "../Code/SignUpData"
+import { toast } from "react-toastify";
 function VerificationPage() {
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
@@ -70,12 +71,16 @@ function VerificationPage() {
           console.log("Sign-up successful:", signUpResponse);
           localStorage.setItem("userId", signUpResponse.user_id);
           window.dispatchEvent(new Event("storage"));
-          navigate("/home");
+          toast.success("sign-up successful!", { containerId: "sign-container" });
+          setTimeout(() => {
+            navigate("/home");
+          }, 3000);
         } else {
-          setError("Sign-up failed. Please try again.");
+          toast.error("Sign-up failed. Please try again.", { containerId: "sign-container" });
         }
          
       } else {
+        toast.error("Invalid or expired code.", { containerId: "sign-container" });
         setError("Invalid or expired code.");
       }
     } catch (error) {

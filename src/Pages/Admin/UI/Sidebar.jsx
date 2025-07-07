@@ -13,6 +13,7 @@ import {
   TrendingUp,
   Truck,
   Users,
+  MessageSquare,
 } from "lucide-react";
 
 export default function Sidebar({ currentColorTheme, theme, isLoaded }) {
@@ -60,7 +61,7 @@ export default function Sidebar({ currentColorTheme, theme, isLoaded }) {
       </div>
 
       <nav className="flex-1 overflow-y-auto py-4 relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-white via-transparent to-white pointer-events-none z-10"></div>
+        <div className="absolute inset-0 pointer-events-none z-10"></div>
         <div className="px-4 space-y-2 relative z-0">
           {/* Main Navigation */}
           <div
@@ -116,7 +117,7 @@ export default function Sidebar({ currentColorTheme, theme, isLoaded }) {
             </div>
           </Link>
 
-          <Link to="/orders">
+          <Link to="/admin/orders">
             <div
               className={`transform transition-transform duration-700 ${isLoaded ? "translate-x-0" : "-translate-x-10"} delay-200`}
               onMouseEnter={() => setHoverState("orders", true)}
@@ -158,7 +159,7 @@ export default function Sidebar({ currentColorTheme, theme, isLoaded }) {
             </div>
           </Link>
 
-          <Link to="/admin">
+          <Link to="/delivery">
             <div
               className={`transform transition-transform duration-700 ${isLoaded ? "translate-x-0" : "-translate-x-10"} delay-300`}
               onMouseEnter={() => setHoverState("delivery", true)}
@@ -186,7 +187,7 @@ export default function Sidebar({ currentColorTheme, theme, isLoaded }) {
             Reports
           </div>
 
-          <Link to="/admin">
+          <Link to="/analytics">
             <div
               className={`transform transition-transform duration-700 ${isLoaded ? "translate-x-0" : "-translate-x-10"} delay-350`}
               onMouseEnter={() => setHoverState("analytics", true)}
@@ -207,22 +208,22 @@ export default function Sidebar({ currentColorTheme, theme, isLoaded }) {
             </div>
           </Link>
 
-          <Link to="/admin">
+          <Link to="/socialMedia">
             <div
               className={`transform transition-transform duration-700 ${isLoaded ? "translate-x-0" : "-translate-x-10"} delay-400`}
-              onMouseEnter={() => setHoverState("sales", true)}
-              onMouseLeave={() => setHoverState("sales", false)}
+              onMouseEnter={() => setHoverState("socialMedia", true)}
+              onMouseLeave={() => setHoverState("socialMedia", false)}
             >
               <div
                 className={`flex items-center px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden cursor-pointer ${
-                  isActive("/sales") ? `text-white ${theme.primary}` : "text-gray-600 hover:bg-gray-100"
-                } ${hoverStates["sales"] ? "shadow-md" : ""}`}
+                  isActive("/socialMedia") ? `text-white ${theme.primary}` : "text-gray-600 hover:bg-gray-100"
+                } ${hoverStates["socialMedia"] ? "shadow-md" : ""}`}
               >
-                <TrendingUp
-                  className={`h-5 w-5 ${isActive("/sales") ? "text-white" : "text-gray-500"} transition-transform duration-300 ${hoverStates["sales"] ? "translate-y-[-2px]" : ""}`}
+                <MessageSquare
+                  className={`h-5 w-5 ${isActive("/socialMedia") ? "text-white" : "text-gray-500"} transition-transform duration-300 ${hoverStates["socialMedia"] ? "translate-y-[-2px]" : ""}`}
                 />
                 <span className={`ml-3 ${isSidebarOpen ? "opacity-100" : "opacity-0 w-0"} transition-all duration-300`}>
-                  Sales
+                  Social Media
                 </span>
               </div>
             </div>
@@ -256,7 +257,7 @@ export default function Sidebar({ currentColorTheme, theme, isLoaded }) {
             Settings
           </div>
 
-          <Link to="/admin">
+          <Link to="/settings">
             <div
               className={`transform transition-transform duration-700 ${isLoaded ? "translate-x-0" : "-translate-x-10"} delay-500`}
               onMouseEnter={() => setHoverState("settings", true)}

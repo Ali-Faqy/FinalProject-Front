@@ -35,6 +35,7 @@ export default function CustomerPage() {
         lastOrder: item.lastOrder,
         status: item.status == 0 ? "Inactive" : "Active",
         avatar: item.avatar,
+        joinDate: item.signed_at,
       }));
       
       setCustomers(data);
@@ -231,7 +232,7 @@ export default function CustomerPage() {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <Link to={`/customers/${customer.id}`}>
+                      <Link to={`/customers/${customer.id}`} state={{ customer }}>
                         <button className="text-sky-600 hover:text-gray-900">View</button>
                       </Link>
                     </td>

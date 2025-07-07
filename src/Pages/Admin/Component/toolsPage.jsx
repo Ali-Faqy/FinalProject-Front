@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Filter, Plus, Search, SlidersHorizontal } from "lucide-react";
 import Layout from "../UI/Layout";
 import PageContainer from "../UI/PageContainer";
-import Image from "/src/assets/image10.png";
+import NoImage from "../../../assets/NoImage.jpg";
 import { Link } from "react-router-dom";
+import { getAllTools } from "../Data/ToolsData.js";
 export default function ProductsPage() {
   const [view, setView] = useState("grid");
   const [filterOpen, setFilterOpen] = useState(false);
@@ -15,89 +16,111 @@ export default function ProductsPage() {
   const [maxPrice, setMaxPrice] = useState("");
   const [stockStatus, setStockStatus] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [products, setProducts] = useState([]);
+  // const [loading, setLoading] = useState(true);
 
-  const products = [
-    {
-      id: 1,
-      name: "Compact Tractor X200",
-      category: "Tractors",
-      price: 24500,
-      stock: 15,
-      image: Image,
-    },
-    {
-      id: 2,
-      name: "Harvester Pro 5000",
-      category: "Harvesters",
-      price: 175000,
-      stock: 8,
-      image: Image,
-    },
-    {
-      id: 3,
-      name: "Irrigation System",
-      category: "Irrigation",
-      price: 8750,
-      stock: 32,
-      image: Image,
-    },
-    {
-      id: 4,
-      name: "Drone Surveyor X1",
-      category: "Drones",
-      price: 3200,
-      stock: 24,
-      image: Image,
-    },
-    {
-      id: 5,
-      name: "Soil Analyzer Kit",
-      category: "Tools",
-      price: 1200,
-      stock: 45,
-      image: Image,
-    },
-    {
-      id: 6,
-      name: "Utility Tractor 4WD",
-      category: "Tractors",
-      price: 45000,
-      stock: 10,
-      image: Image,
-    },
-    {
-      id: 7,
-      name: "Sprinkler System Pro",
-      category: "Irrigation",
-      price: 5600,
-      stock: 18,
-      image: Image,
-    },
-    {
-      id: 8,
-      name: "Crop Monitoring Drone",
-      category: "Drones",
-      price: 4500,
-      stock: 12,
-      image: Image,
-    },
-    {
-      id: 9,
-      name: "Advanced Seeder",
-      category: "Tools",
-      price: 3500,
-      stock: 20,
-      image: Image,
-    },
-    {
-      id: 10,
-      name: "Tractor Loader",
-      category: "Tractors",
-      price: 60000,
-      stock: 5,
-      image: Image,
-    },
-  ];
+  const fetchAllTools = async () => {
+      const response = await getAllTools();
+      if (response) {
+        const products = response.map((product) => ({
+          id: product.product_id,
+          name: product.product_name,
+          category: product.category_name,
+          price: product.selling_price,
+          stock: product.remaining_quantity,
+          image: product.attachment_link,
+
+        }));
+        setProducts(products);
+      }
+    }
+
+    useEffect(() => {
+      fetchAllTools();
+      }, []);
+
+  // const products = [
+  //   {
+  //     id: 1,
+  //     name: "Compact Tractor X200",
+  //     category: "Tractors",
+  //     price: 24500,
+  //     stock: 15,
+  //     image: Image,
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Harvester Pro 5000",
+  //     category: "Harvesters",
+  //     price: 175000,
+  //     stock: 8,
+  //     image: Image,
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Irrigation System",
+  //     category: "Irrigation",
+  //     price: 8750,
+  //     stock: 32,
+  //     image: Image,
+  //   },
+  //   {
+  //     id: 4,
+  //     name: "Drone Surveyor X1",
+  //     category: "Drones",
+  //     price: 3200,
+  //     stock: 24,
+  //     image: Image,
+  //   },
+  //   {
+  //     id: 5,
+  //     name: "Soil Analyzer Kit",
+  //     category: "Tools",
+  //     price: 1200,
+  //     stock: 45,
+  //     image: Image,
+  //   },
+  //   {
+  //     id: 6,
+  //     name: "Utility Tractor 4WD",
+  //     category: "Tractors",
+  //     price: 45000,
+  //     stock: 10,
+  //     image: Image,
+  //   },
+  //   {
+  //     id: 7,
+  //     name: "Sprinkler System Pro",
+  //     category: "Irrigation",
+  //     price: 5600,
+  //     stock: 18,
+  //     image: Image,
+  //   },
+  //   {
+  //     id: 8,
+  //     name: "Crop Monitoring Drone",
+  //     category: "Drones",
+  //     price: 4500,
+  //     stock: 12,
+  //     image: Image,
+  //   },
+  //   {
+  //     id: 9,
+  //     name: "Advanced Seeder",
+  //     category: "Tools",
+  //     price: 3500,
+  //     stock: 20,
+  //     image: Image,
+  //   },
+  //   {
+  //     id: 10,
+  //     name: "Tractor Loader",
+  //     category: "Tractors",
+  //     price: 60000,
+  //     stock: 5,
+  //     image: Image,
+  //   },
+  // ];
 
   // Filter products based on selected filters
   const filteredProducts = products.filter((product) => {
@@ -290,7 +313,7 @@ export default function ProductsPage() {
               >
                 <div className="relative h-48 bg-gray-100 overflow-hidden">
                   <img
-                    src={product.image}
+                    src={product.image == null ? NoImage : product.image}
                     alt={product.name}
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
@@ -319,23 +342,18 @@ export default function ProductsPage() {
                       {product.stock} in stock
                     </span>
                   </div>
-                  <div className="mt-4 grid grid-cols-2 gap-2">
-                    <button
-                      className="px-3 py-1.5 text-sm bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-700 hover:to-emerald-600 text-white rounded-lg transition-all duration-300"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
+                  <div className="mt-4 grid grid-cols-2">
+                    <Link to={`/tools/${product.id}/edit`}><button
+                      className="w-20 py-1.5 text-sm bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-700 hover:to-emerald-600 text-white rounded-lg transition-all duration-300"
                     >
                       Edit
-                    </button>
-                    <button
-                      className="px-3 py-1.5 text-sm border border-gray-200 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors duration-300"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
+                    </button></Link>
+                    <Link to={`/tools/${product.id}/view`}><button
+                      className="w-20 ml-[-20px] py-1.5 text-sm border border-gray-200 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors duration-300"
+
                     >
                       View
-                    </button>
+                    </button></Link>
                   </div>
                 </div>
               </div>
@@ -373,7 +391,7 @@ export default function ProductsPage() {
                       <div className="flex items-center">
                         <div className="h-12 w-12 flex-shrink-0 rounded-md overflow-hidden">
                           <img
-                            src={product.image}
+                            src={product.image == null ? NoImage : product.image}
                             alt={product.name}
                             className="h-full w-full object-cover"
                           />
@@ -415,9 +433,9 @@ export default function ProductsPage() {
                       <button className="text-green-600 hover:text-green-900 mr-3">
                         Edit
                       </button>
-                      <button className="text-gray-600 hover:text-gray-900">
+                      <Link to={`/tools/${product.id}/view`}><button className="text-gray-600 hover:text-gray-900">
                         View
-                      </button>
+                      </button></Link>
                     </td>
                   </tr>
                 ))}

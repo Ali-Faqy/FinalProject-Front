@@ -117,7 +117,7 @@ const AIDesignPage = () => {
 
     <>
     
-    <Navication/>
+    <Navication open={{is: "advanced search"}}/>
 
           <HeroBackGround>
             <div className="mb-6 flex items-center">

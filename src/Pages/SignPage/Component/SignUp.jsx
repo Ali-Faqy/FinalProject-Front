@@ -14,11 +14,12 @@ import {
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
-import {checkUserDefined} from "../Code/SignUpData.js"
+import { checkUserDefined } from "../Code/SignUpData.js";
+import { toast } from 'react-toastify';
+
 function SignUp() {
   const navigate = useNavigate();
 
-  
   const isValidEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -30,29 +31,30 @@ function SignUp() {
   const [password, setPassword] = useState("");
 
   const handleSignUp = async () => {
-
     if (!email || !password || !name) {
-      alert("Please fill in both name and email and password.");
+      toast.error("Please fill in name, email, and password.", { containerId: "sign-container" });
       return;
     }
     if (!isValidEmail(email)) {
-      alert("Please enter a valid email address.");
+      toast.error("Please enter a valid email address.", { containerId: "sign-container" });
       return;
     }
 
-    try{
+    try {
       const data = await checkUserDefined(email);
       if (data.IsUserDefined) {
-        alert("Email already exists. Please use a different email.");
+        toast.error("Email already exists. Please use a different email.", { containerId: "sign-container" });
         return;
       }
-    }
-    catch (error) {
+      toast.success("Proceeding to verification.", { containerId: "sign-in-container" });
+      setTimeout(() => {
+        navigate("/verification", { state: { name, email, password } });
+      }, 3000);
+    } catch (error) {
       console.error("Fetch error:", error);
+      toast.error("An error occurred during sign-up. Please try again.", { containerId: "sign-container" });
     }
-    navigate("/verification", { state: { name, email, password } });
   };
-
 
   return (
     <GoogleOAuthProvider clientId="631245239192-8cek364mrcs3477aet7poiv7tj0kn39c.apps.googleusercontent.com">
@@ -89,36 +91,40 @@ function SignUp() {
             <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600"></div>
 
             <h1 className="text-3xl font-bold mb-8 text-center text-black">
-              Welcome Back
+              Create Account
             </h1>
             <div className="flex justify-center space-x-4 mb-8">
-                {/* Google login inside Mail icon */}
-                <GoogleLogin
-                  onSuccess={async (credentialResponse) => {
-                    try {
-                      const res = await axios.post(
-                        "http://localhost:8000/users/google-login",
-                        {
-                          token: credentialResponse.credential,
-                        }
-                      );
-                      console.log("Backend response:", res.data);
-                    } catch (error) {
-                      console.error("Error during Google sign-up:", error);
-                    }
-                  }}
-                  onError={() => {
-                    console.log("Login Failed");
-                  }}
-                  render={(renderProps) => (
-                    <button
-                      onClick={renderProps.onClick}
-                      className="w-12 h-12 flex items-center justify-center rounded-full bg-red-600 hover:bg-red-700 transition-all duration-300 transform hover:scale-110 shadow-md"
-                    >
-                      <Mail className="h-5 w-5 text-white" />
-                    </button>
-                  )}
-                />
+              {/* Google login inside Mail icon */}
+              <GoogleLogin
+                onSuccess={async (credentialResponse) => {
+                  try {
+                    const res = await axios.post(
+                      "http://localhost:8000/users/google-login",
+                      {
+                        token: credentialResponse.credential,
+                      }
+                    );
+                    localStorage.setItem("userId", res.data.user_id);
+                    toast.success("Google sign-up successful!", { containerId: "sign-container" });
+                    navigate("/home");
+                  } catch (error) {
+                    console.error("Error during Google sign-up:", error);
+                    toast.error("Google sign-up failed. Please try again.", { containerId: "sign-container" });
+                  }
+                }}
+                onError={() => {
+                  console.log("Google Sign-Up Failed");
+                  toast.error("Google sign-up failed.", { containerId: "sign-container" });
+                }}
+                render={(renderProps) => (
+                  <button
+                    onClick={renderProps.onClick}
+                    className="w-12 h-12 flex items-center justify-center rounded-full bg-red-600 hover:bg-red-700 transition-all duration-300 transform hover:scale-110 shadow-md"
+                  >
+                    <Mail className="h-5 w-5 text-white" />
+                  </button>
+                )}
+              />
               {/* Facebook login with icon */}
               <FacebookLogin
                 appId="717835217478182"
@@ -132,29 +138,24 @@ function SignUp() {
                         accessToken: response.accessToken,
                       }
                     );
-                    console.log(
-                      "Facebook login response from backend:",
-                      res.data
-                    );
+                    localStorage.setItem("userId", res.data.user_id);
+                    toast.success("Facebook sign-up successful!", { containerId: "sign-container" });
+                    navigate("/home");
                   } catch (error) {
-                    console.error("Facebook login failed:", error);
+                    console.error("Facebook sign-up failed:", error);
+                    toast.error("Facebook sign-up failed. Please try again.", { containerId: "sign-container" });
                   }
                 }}
                 render={(renderProps) => (
                   <button
                     onClick={renderProps.onClick}
-                    className="w-12 h-12 flex items-center justify-center rounded-full bg-teal-700 hover:bg-teal-800 transition-all duration-300 transform hover:scale-110 shadow-md"
+                    className="w-60 h-10 flex items-center justify-center border"
                   >
-                    <Facebook className="h-5 w-5 text-black" />
+                    <Facebook className="mr-2 h-5 w-5 text-blue-500" />
+                    Sign up with Facebook
                   </button>
                 )}
               />
-              <button className="w-12 h-12 flex items-center justify-center rounded-full bg-teal-700 hover:bg-teal-800 transition-all duration-300 transform hover:scale-110 shadow-md">
-                <Github className="h-5 w-5" />
-              </button>
-              <button className="w-12 h-12 flex items-center justify-center rounded-full bg-teal-700 hover:bg-teal-800 transition-all duration-300 transform hover:scale-110 shadow-md">
-                <Linkedin className="h-5 w-5" />
-              </button>
             </div>
             <div className="relative flex items-center justify-center mb-8">
               <div className="flex-grow border-t border-gray-300"></div>
@@ -220,12 +221,12 @@ function SignUp() {
             </button>
 
             <div className="mt-6 text-center md:hidden">
-              <p className="text-gray-500 mb-2">Don't have an account?</p>
+              <p className="text-gray-500 mb-2">Already have an account?</p>
               <Link
-                href="/signup"
+                to="/signIn"
                 className="text-teal-600 font-medium hover:text-teal-800 transition-colors duration-300"
               >
-                SIGN UP
+                SIGN IN
               </Link>
             </div>
           </div>

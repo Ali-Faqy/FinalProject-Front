@@ -1,7 +1,7 @@
 import Layout from "../UI/Layout"
 import PageContainer from "../UI/PageContainer"
-import { useState } from "react"
-import { useParams, Link } from "react-router-dom"
+import { useState, useEffect } from "react"
+import { Link } from "react-router-dom"
 import {
   Printer,
   X,
@@ -17,56 +17,41 @@ import {
   ArrowLeft,
 } from "lucide-react"
 
+import NoImage from "../../../assets/NoImage.jpg"
+import { useLocation } from "react-router-dom";
+import { getAllOrderForCustomer } from "../Data/CustomerData.js";
 export default function ViewCustomerInfo() {
-  const { customerId } = useParams()
+  const location = useLocation();
+  const data = location.state?.customer;
   const [isDeleting, setIsDeleting] = useState(false)
   const [showStatusConfirm, setShowStatusConfirm] = useState(false)
 
-  const [customer, setCustomer] = useState({
-    id: Number.parseInt(customerId),
-    name: "John Smith",
-    email: "john.smith@example.com",
-    phone: "(555) 123-4567",
-    location: "New York, USA",
-    orders: 12,
-    spent: 45600,
-    lastOrder: "2023-04-15",
-    status: "Active",
-    avatar: "",
-    joinDate: "2022-01-15",
-    paymentMethod: "Credit Card (Visa ending in 4242)",
-  })
+  const [customer, setCustomer] = useState(data);
+  const [orderHistory, setOrderHistory] = useState([])
 
-  const orderHistory = [
-    {
-      id: "ORD-2023-1234",
-      date: "2023-04-15",
-      items: 3,
-      total: 12500,
-      status: "Delivered",
-    },
-    {
-      id: "ORD-2023-1156",
-      date: "2023-03-22",
-      items: 1,
-      total: 8500,
-      status: "Delivered",
-    },
-    {
-      id: "ORD-2023-0987",
-      date: "2023-02-10",
-      items: 2,
-      total: 15600,
-      status: "Delivered",
-    },
-    {
-      id: "ORD-2022-0876",
-      date: "2022-12-05",
-      items: 1,
-      total: 9000,
-      status: "Delivered",
-    },
-  ]
+  const fetchOrderHistory = async () => {
+      try {
+        const response = await getAllOrderForCustomer(customer.id);
+        if (!response) throw new Error("No customers found");
+        
+        const data = response.map((item) => ({
+          id : item.order_id,
+          date: item.order_date,
+          items: item.number_product,
+          total: item.total_price,
+          status: item.order_status,
+        }));
+        
+        setOrderHistory(data);
+      } catch (err) {
+        console.error("Error fetching customers:", err);
+      }
+    };
+
+  useEffect(() => {
+    fetchOrderHistory();
+  }, []);
+
 
   
 
@@ -81,6 +66,10 @@ export default function ViewCustomerInfo() {
   
       setShowStatusConfirm(false)
     }, 1500)
+
+
+
+
   }
   
 
@@ -106,6 +95,9 @@ export default function ViewCustomerInfo() {
       default:
         return "bg-slate-100 text-slate-800"
     }
+  }
+  if (!customer) {
+    return <div>Loading or customer not found...</div>;
   }
 
   return (
@@ -163,7 +155,7 @@ export default function ViewCustomerInfo() {
               <div className="relative mb-4">
                 <div className="h-24 w-24 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gradient-to-br from-violet-50 to-slate-100">
                   <img
-                    src={customer.avatar || "/placeholder.svg"}
+                    src={customer.avatar || NoImage}
                     alt={customer.name}
                     width={120}
                     height={120}
@@ -306,7 +298,7 @@ export default function ViewCustomerInfo() {
                 {orderHistory.map((order) => (
                   <tr key={order.id} className="hover:bg-slate-50 transition-colors duration-300">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-slate-900">{order.id}</div>
+                      <div className="text-sm font-medium text-slate-900">ORD-{order.id}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-slate-500">{order.date}</div>

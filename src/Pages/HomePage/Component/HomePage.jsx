@@ -3,7 +3,7 @@ import Header from "./Header.jsx";
 import ProductBody from "./ProductBody.jsx";
 import CategoryBody from "./CategoryBody.jsx";
 import SocialMedia from "./SocialMedia.jsx";
-import Contact from "../../MainPage/Component/Contact.jsx";
+import ContactUs from "./ContactUs.jsx";
 
 function HomePage() {
     const userId = localStorage.getItem("userId");
@@ -11,13 +11,13 @@ function HomePage() {
         <Link to="/signIn"></Link>
     }
   return (
-    <div className="bg-[#f8f5f0] h-screen w-screen">
+    <div className="h-screen w-screen">
         <Navication/>
         <Header />
         <ProductBody/>
         <CategoryBody/>
         <SocialMedia/>
-        <Contact/>
+        <ContactUs/>
     </div>
     );
 }

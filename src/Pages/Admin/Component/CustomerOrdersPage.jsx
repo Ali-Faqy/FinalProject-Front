@@ -1,9 +1,13 @@
-import { useState, useEffect, } from "react";
-import { Link  } from "react-router-dom";
-import { Calendar, Download, Filter, Search, Users } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Download, Filter, Search, Users } from "lucide-react";
 import Layout from "../UI/Layout.jsx";
 import PageContainer from "../UI/PageContainer.jsx";
+import { getAllCustomerOrder } from "../Data/CustomerData.js";
 export default function CustomerOrdersPage() {
+  const navigate = useNavigate();
+  const currentType = "customer";
+
   const [filterOpen, setFilterOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredOrders, setFilteredOrders] = useState([]);
@@ -15,198 +19,52 @@ export default function CustomerOrdersPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 6;
+  const [orders, setOrders] = useState([]);
 
-  // Updated orders data with multiple products per order
-  const orders = [
-    {
-      id: "ORD-45782",
-      customer: "John Smith",
-      date: "2023-04-15",
-      total: 24500,
-      status: "Shipped",
-      items: 2,
-      payment: "Paid",
-      products: [
-        {
-          name: "Compact Tractor X200",
-          price: 22000,
-          quantity: 1,
-          id: "prod-1",
-          discount: 10,
-        },
-        {
-          name: "Tractor Attachment Kit",
-          price: 2500,
-          quantity: 1,
-          id: "prod-2",
-        },
-      ],
-    },
-    {
-      id: "ORD-45781",
-      customer: "Sarah Johnson",
-      date: "2023-04-14",
-      total: 175000,
-      status: "Processing",
-      items: 3,
-      payment: "Paid",
-      products: [
-        {
-          name: "Harvester Pro 5000",
-          price: 165000,
-          quantity: 1,
-          id: "prod-3",
-        },
-        {
-          name: "Harvester Maintenance Kit",
-          price: 5000,
-          quantity: 1,
-          id: "prod-4",
-          discount: 5,
-        },
-        {
-          name: "Operator Training Session",
-          price: 5000,
-          quantity: 1,
-          id: "prod-5",
-        },
-      ],
-    },
-    {
-      id: "ORD-45780",
-      customer: "Michael Brown",
-      date: "2023-04-12",
-      total: 8750,
-      status: "Delivered",
-      items: 2,
-      payment: "Paid",
-      products: [
-        { name: "Irrigation System", price: 7500, quantity: 1, id: "prod-6" },
-        {
-          name: "Installation Service",
-          price: 1250,
-          quantity: 1,
-          id: "prod-7",
-          discount: 20,
-        },
-      ],
-    },
-    {
-      id: "ORD-45779",
-      customer: "Emily Davis",
-      date: "2023-04-10",
-      total: 3200,
-      status: "Processing",
-      items: 3,
-      payment: "Pending",
-      products: [
-        { name: "Drone Surveyor X1", price: 2500, quantity: 1, id: "prod-8" },
-        { name: "Extra Battery Pack", price: 450, quantity: 1, id: "prod-9" },
-        {
-          name: "Carrying Case",
-          price: 250,
-          quantity: 1,
-          id: "prod-10",
-          discount: 15,
-        },
-      ],
-    },
-    {
-      id: "ORD-45778",
-      customer: "Robert Wilson",
-      date: "2023-04-08",
-      total: 1200,
-      status: "Delivered",
-      items: 2,
-      payment: "Paid",
-      products: [
-        { name: "Soil Analyzer Kit", price: 800, quantity: 1, id: "prod-11" },
-        {
-          name: "Soil Sample Collection Tools",
-          price: 400,
-          quantity: 1,
-          id: "prod-12",
-        },
-      ],
-    },
-    {
-      id: "ORD-45777",
-      customer: "Jennifer Taylor",
-      date: "2023-04-05",
-      total: 45000,
-      status: "Shipped",
-      items: 4,
-      payment: "Paid",
-      products: [
-        {
-          name: "Utility Tractor 4WD",
-          price: 40000,
-          quantity: 1,
-          id: "prod-13",
-        },
-        {
-          name: "Front Loader Attachment",
-          price: 3000,
-          quantity: 1,
-          id: "prod-14",
-        },
-        {
-          name: "Rear Blade Attachment",
-          price: 1200,
-          quantity: 1,
-          id: "prod-15",
-        },
-        { name: "Extended Warranty", price: 800, quantity: 1, id: "prod-16" },
-      ],
-    },
-    {
-      id: "ORD-45776",
-      customer: "David Miller",
-      date: "2023-04-03",
-      total: 5600,
-      status: "Cancelled",
-      items: 2,
-      payment: "Refunded",
-      products: [
-        {
-          name: "Sprinkler System Pro",
-          price: 4800,
-          quantity: 1,
-          id: "prod-17",
-        },
-        { name: "Water Timer", price: 800, quantity: 1, id: "prod-18" },
-      ],
-    },
-    {
-      id: "ORD-45775",
-      customer: "Lisa Anderson",
-      date: "2023-04-01",
-      total: 4500,
-      status: "Delivered",
-      items: 3,
-      payment: "Paid",
-      products: [
-        {
-          name: "Crop Monitoring Drone",
-          price: 3500,
-          quantity: 1,
-          id: "prod-19",
-        },
-        { name: "Software License", price: 500, quantity: 1, id: "prod-20" },
-        { name: "Training Session", price: 500, quantity: 1, id: "prod-21" },
-      ],
-    },
-  ];
 
-  // Format products for display in the table
-  const formatProducts = (products) => {
-    if (products.length === 1) {
-      return products[0].name;
-    }
+  const fetchOrderHistory = async () => {
+        try {
+          const response = await getAllCustomerOrder();
+          if (!response) throw new Error("No customers found");
+          const data = response.map((order) => ({
+            id: order.order_id,
+            customer: order.user_name,
+            date: order.order_date,
+            total: order.total_price,
+            status: order.order_status || "Pending",
+            items: order.number_product,
+            payment: order.payment ? "Paid" : "Not Paid",
+            payment_status: order.payment_method,
+            products: order.products.map((product) => ({
+              name: product.product_name,
+              quantity: product.quantity,
+              id: `prod-${product.product_id}`,
+              ...(product.offer_percentage && { discount: product.offer_percentage }),
+            })),
+          }));
+          setOrders(data);
+          setFilteredOrders(data);
+          console.log(data)
+        } catch (err) {
+          console.error("Error fetching customers:", err);
+        }
+        };
+        useEffect(() => {
+          fetchOrderHistory();
+        }, []);
 
-    const mainProduct = products[0].name;
-    return `${mainProduct} + ${products.length - 1} more`;
-  };
+
+        const formatProducts = (products) => {
+          if (!products || products.length === 0) return "No products";
+        
+          if (products.length === 1) {
+            return products[0].name;
+          }
+        
+          const mainProduct = products[0].name;
+          return `${mainProduct} + ${products.length - 1} more`;
+        };
+        
 
   // Apply filters whenever search term or filters change
   useEffect(() => {
@@ -256,14 +114,19 @@ export default function CustomerOrdersPage() {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "Shipped":
+      case "Order Placed":
         return "bg-blue-100 text-blue-800";
       case "Processing":
         return "bg-yellow-100 text-yellow-800";
+      case "Shipped":
+        return "bg-orange-100 text-orange-800";
+        case "In Transit":
+        return "bg-purple-100 text-purple-800";
+      case "Out for Delivery":
+        return "bg-teal-100 text-teal-800";
+
       case "Delivered":
         return "bg-green-100 text-green-800";
-      case "Cancelled":
-        return "bg-red-100 text-red-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
@@ -273,22 +136,20 @@ export default function CustomerOrdersPage() {
     switch (payment) {
       case "Paid":
         return "bg-green-100 text-green-800";
-      case "Pending":
-        return "bg-yellow-100 text-yellow-800";
-      case "Refunded":
+      case "Not Paid":
         return "bg-red-100 text-red-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
   };
 
-
   const handleOrderTypeChange = (type) => {
-    if (type === "purchase") {
-      // router.push("/orders/purchase")
+    if (type === "customer") {
+      navigate("/admin/orders/customers");
+    } else if (type === "purchase") {
+      navigate("/admin/orders/purchase");
     }
   };
-
 
   const handleResetFilters = () => {
     setStatusFilter("");
@@ -312,6 +173,7 @@ export default function CustomerOrdersPage() {
         "Total",
         "Status",
         "Payment",
+        "Payment Method",
         "Products",
       ];
       const csvContent = [
@@ -372,12 +234,15 @@ export default function CustomerOrdersPage() {
       >
         <div className="bg-gray-50 min-h-screen">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
             {/* Order Type Selector */}
             <div className="flex mb-6">
               <div className="bg-white rounded-lg border border-gray-200 p-1 inline-flex">
                 <button
-                  className="px-4 py-2 rounded-md bg-green-500 text-white font-medium"
+                  className={`px-4 py-2 rounded-md font-medium ${
+                    currentType === "customer"
+                      ? "bg-green-500 text-white"
+                      : "text-gray-600 hover:bg-gray-100 transition-colors"
+                  }`}
                   onClick={() => handleOrderTypeChange("customer")}
                 >
                   <div className="flex items-center gap-2">
@@ -386,7 +251,11 @@ export default function CustomerOrdersPage() {
                   </div>
                 </button>
                 <button
-                  className="px-4 py-2 rounded-md text-gray-600 hover:bg-gray-100 font-medium transition-colors"
+                  className={`px-4 py-2 rounded-md font-medium ${
+                    currentType === "purchase"
+                      ? "bg-green-500 text-white"
+                      : "text-gray-600 hover:bg-gray-100 transition-colors"
+                  }`}
                   onClick={() => handleOrderTypeChange("purchase")}
                 >
                   <div className="flex items-center gap-2">
@@ -525,6 +394,9 @@ export default function CustomerOrdersPage() {
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Payment
                       </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Payment Method
+                      </th>
                       <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Actions
                       </th>
@@ -556,9 +428,7 @@ export default function CustomerOrdersPage() {
                             <div className="text-sm text-gray-900">
                               {formatProducts(order.products)}
                               {order.products.length > 1 && (
-                                <div
-                                  className="text-xs text-gray-500 mt-1 cursor-pointer hover:text-green-600"
-                                >
+                                <div className="text-xs text-gray-500 mt-1 cursor-pointer hover:text-green-600">
                                   View all items
                                 </div>
                               )}
@@ -592,15 +462,22 @@ export default function CustomerOrdersPage() {
                               {order.payment}
                             </span>
                           </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span
+                              className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full`}
+                            >
+                              {order.payment_status}
+                            </span>
+                          </td>
                           <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <Link
-                              to={`/orders/${order.id}/view`}
+                              to={`/admin/orders/customers/${order.id}/view`}
                               className="text-green-600 hover:text-green-900 mr-3"
                             >
                               View
                             </Link>
                             <Link
-                              to={`/orders/${order.id}/track`}
+                              to={`/admin/orders/customers/${order.id}/track`}
                               className="text-gray-600 hover:text-gray-900"
                             >
                               Track
