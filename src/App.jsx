@@ -60,7 +60,7 @@ function ProtectedRoute({ element, allowedRoles }) {
   }
 
   if (!allowedRoles.includes(userRole)) {
-    return <Navigate to={userRole === "Driver" ? "/delivery" : "/home"} />;
+    return <ErrorPage />;
   }
 
   return element;
@@ -445,7 +445,7 @@ function App() {
           path="/socialMedia"
           element={
             <ProtectedRoute
-              element={<SocialMediaUsersPage />}
+              element={<SocialMediaPage />}
               allowedRoles={["Admin"]}
             />
           }
