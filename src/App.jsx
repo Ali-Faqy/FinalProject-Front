@@ -33,14 +33,13 @@ import DeliveryPage from "./Pages/Admin/Component/DeliveryPage.jsx";
 import DeliveryDetailsPage from "./Pages/Admin/Component/DeliveryDetailsPage.jsx";
 import TrackDeliveryOrder from "./Pages/Admin/Component/TrackDeliveryOrder.jsx";
 import AnalyticsPage from "./Pages/Admin/Component/AnalyticsPage.jsx";
-import SettingPage from "./pages/Admin/Component/SettingPage.jsx";
+import SettingPage from "./Pages/Admin/Component/SettingPage.jsx";
 import SocialMediaPage from "./Pages/Admin/Component/SocialMediaPart/SocialMediaPage.jsx";
 import SocialMediaPostsPage from "./Pages/Admin/Component/SocialMediaPart/SocialMediaPostsPage.jsx";
 import SocialMediaReportsPage from "./Pages/Admin/Component/SocialMediaPart/SocialMediaReportsPage.jsx";
 import SocialMediaUsersPage from "./Pages/Admin/Component/SocialMediaPart/SocialMediaUsersPage.jsx";
 import ViewProduct from "./Pages/ProductsPage/Component/ViewProduct.jsx";
 import UserSocialMedia from "./Pages/ScoialMedia/Component/UserSocialMedia.jsx";
-import UploadFrom from "./Pages/UploadFrom.jsx"
 import {
   BrowserRouter as Router,
   Route,
@@ -51,16 +50,76 @@ import { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+// ProtectedRoute component to restrict access based on role
+function ProtectedRoute({ element, allowedRoles }) {
+  const userId = localStorage.getItem("userId");
+  const userRole = localStorage.getItem("userRole");
+
+  if (!userId) {
+    return <Navigate to="/signIn" />;
+  }
+
+  if (!allowedRoles.includes(userRole)) {
+    return <Navigate to={userRole === "Driver" ? "/delivery" : "/home"} />;
+  }
+
+  return element;
+}
+
 function App() {
   const [userId, setUserId] = useState(localStorage.getItem("userId"));
+  const [userRole, setUserRole] = useState(localStorage.getItem("userRole"));
 
   useEffect(() => {
     const handleStorageChange = () => {
       setUserId(localStorage.getItem("userId"));
+      setUserRole(localStorage.getItem("userRole"));
     };
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
+
+  // Define allowed routes for each role
+  const userRoutes = [
+    "/home",
+    "/categories",
+    "/products",
+    "/cart/:userId",
+    "/checkout/:userId",
+    "/profile",
+    "/accountSettings",
+    "/AI",
+    "/admin",
+    "/tools",
+    "/tools/add",
+    "/checkout/success",
+    "/checkout/failed",
+    "/socialMedia/users",
+  ];
+  const driverRoutes = ["/delivery", "/delivery/:id", "/delivery/:id/track"];
+  const adminRoutes = [
+    "/admin",
+    "/tools",
+    "/tools/add",
+    "/customers",
+    "/customers/:customerId",
+    "/inventory",
+    "/admin/orders",
+    "/admin/orders/customers",
+    "/admin/orders/purchase",
+    "/admin/orders/customers/:id/view",
+    "/admin/orders/customers/:id/track",
+    "/admin/orders/purchase/:id/view",
+    "/admin/orders/purchase/new",
+    "/tools/:id/view",
+    "/tools/:id/edit",
+    "/analytics",
+    "/socialMedia",
+    "/socialMedia/posts",
+    "/socialMedia/reports",
+    "/socialMedia/users",
+    "/settings",
+  ];
 
   return (
     <Router>
@@ -104,94 +163,320 @@ function App() {
       />
 
       <Routes>
+        {/* Public Routes */}
         <Route path="/" element={<MainPage />} />
         <Route path="/signIn" element={<SignIn />} />
         <Route path="/signUp" element={<SignUp />} />
         <Route path="/verification" element={<VerificationPage />} />
-        {userId ? (
-          <>
-            <Route path="/home" element={<HomePage />} />
-            <Route path="/categories" element={<CategoriesPage />} />
-            <Route path="/products" element={<ProductsPage />} />
-            <Route path="/cart/:userId" element={<CartPage />} />
-            <Route path="/checkout/:userId" element={<CheckOutPage />} />
-            <Route path="/profile" element={<UserDashboard />} />
-            <Route path="/accountSettings" element={<AccountSettings />} />
-            <Route path="/AI" element={<AI />} />
-            <Route path="/admin" element={<Dashboard />} />
-            <Route path="/tools" element={<ToolsPage />} />
-            <Route path="/tools/add" element={<AddTool />} />
-            <Route path="/customers" element={<CustomerPage />} />
-            <Route
-              path="/customers/:customerId"
-              element={<ViewCustomerInfo />}
+
+        {/* User Routes */}
+        <Route
+          path="/home"
+          element={
+            <ProtectedRoute
+              element={<HomePage />}
+              allowedRoles={["User", "Admin"]}
             />
-            <Route path="/checkout/success" element={<SuccessPage />} />
-            <Route path="/checkout/failed" element={<FailedPage />} />
-            <Route path="/inventory" element={<InventoryPage />} />
-            <Route path="/admin/orders" element={<OrdersPage />} />
-            <Route
-              path="/admin/orders/customers"
-              element={<CustomerOrdersPage />}
+          }
+        />
+        <Route
+          path="/categories"
+          element={
+            <ProtectedRoute
+              element={<CategoriesPage />}
+              allowedRoles={["User", "Admin"]}
             />
-            <Route
-              path="/admin/orders/purchase"
-              element={<PurchaseOrdersPage />}
+          }
+        />
+        <Route
+          path="/products"
+          element={
+            <ProtectedRoute
+              element={<ProductsPage />}
+              allowedRoles={["User", "Admin"]}
             />
-            <Route
-              path="/admin/orders/customers/:id/view"
-              element={<ViewOrderCustomer />}
+          }
+        />
+        <Route
+          path="/cart/:userId"
+          element={
+            <ProtectedRoute
+              element={<CartPage />}
+              allowedRoles={["User", "Admin"]}
             />
-            <Route
-              path="/admin/orders/customers/:id/track"
-              element={<TrackCustomerOrder />}
+          }
+        />
+        <Route
+          path="/checkout/:userId"
+          element={
+            <ProtectedRoute
+              element={<CheckOutPage />}
+              allowedRoles={["User", "Admin"]}
             />
-            <Route
-              path="/admin/orders/purchase/:id/view"
-              element={<PurchaseOrderViewPage />}
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute
+              element={<UserDashboard />}
+              allowedRoles={["User", "Admin"]}
             />
-            <Route
-              path="/admin/orders/purchase/new"
-              element={<NewPurchaseOrderPage />}
+          }
+        />
+        <Route 
+        path="/product/view/:id" element={<ViewProduct />} 
+        allowedRoles={["User", "Admin"]}
+        />
+
+        <Route
+          path="/accountSettings"
+          element={
+            <ProtectedRoute
+              element={<AccountSettings />}
+              allowedRoles={["User", "Admin"]}
             />
-            <Route path="/tools/:id/view" element={<ProductDetailPage />} />
-            <Route path="/tools/:id/edit" element={<EditTool />} />
-            <Route path="/delivery" element={<DeliveryPage />} />
-            <Route path="/delivery/:id" element={<DeliveryDetailsPage />} />
-            <Route
-              path="/delivery/:id/track"
+          }
+        />
+        <Route
+          path="/AI"
+          element={
+            <ProtectedRoute element={<AI />} allowedRoles={["User", "Admin"]} />
+          }
+        />
+        <Route
+          path="/checkout/success"
+          element={
+            <ProtectedRoute
+              element={<SuccessPage />}
+              allowedRoles={["User", "Admin"]}
+            />
+          }
+        />
+        <Route
+          path="/checkout/failed"
+          element={
+            <ProtectedRoute
+              element={<FailedPage />}
+              allowedRoles={["User", "Admin"]}
+            />
+          }
+        />
+        <Route
+          path="/social-media"
+          element={
+            <ProtectedRoute
+              element={<UserSocialMedia />}
+              allowedRoles={["User", "Admin"]}
+            />
+          }
+        />
+
+
+        {/* Driver Routes */}
+        <Route
+          path="/delivery"
+          element={
+            <ProtectedRoute
+              element={<DeliveryPage />}
+              allowedRoles={["Driver"]}
+            />
+          }
+        />
+        <Route
+          path="/delivery/:id"
+          element={
+            <ProtectedRoute
+              element={<DeliveryDetailsPage />}
+              allowedRoles={["Driver"]}
+            />
+          }
+        />
+        <Route
+          path="/delivery/:id/track"
+          element={
+            <ProtectedRoute
               element={<TrackDeliveryOrder />}
+              allowedRoles={["Driver"]}
             />
-            <Route path="/analytics" element={<AnalyticsPage />} />
-            <Route path="/socialMedia" element={<SocialMediaPage />} />
-            <Route
-              path="/socialMedia/posts"
-              element={<SocialMediaPostsPage />}
+          }
+        />
+
+        {/* Admin Routes */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute
+              element={<Dashboard />}
+              allowedRoles={["Admin"]}
             />
-            <Route
-              path="/socialMedia/reports"
-              element={<SocialMediaReportsPage />}
+          }
+        />
+        <Route
+          path="/tools"
+          element={
+            <ProtectedRoute
+              element={<ToolsPage />}
+              allowedRoles={["Admin"]}
             />
-            <Route
-              path="/socialMedia/users"
+          }
+        />
+        <Route
+          path="/tools/add"
+          element={
+            <ProtectedRoute
+              element={<AddTool />}
+              allowedRoles={["Admin"]}
+            />
+          }
+        />
+        <Route
+          path="/customers"
+          element={
+            <ProtectedRoute
+              element={<CustomerPage />}
+              allowedRoles={["Admin"]}
+            />
+          }
+        />
+        <Route
+          path="/customers/:customerId"
+          element={
+            <ProtectedRoute
+              element={<ViewCustomerInfo />}
+              allowedRoles={["Admin"]}
+            />
+          }
+        />
+        <Route
+          path="/inventory"
+          element={
+            <ProtectedRoute
+              element={<InventoryPage />}
+              allowedRoles={["Admin"]}
+            />
+          }
+        />
+        <Route
+          path="/admin/orders"
+          element={
+            <ProtectedRoute element={<OrdersPage />} allowedRoles={["Admin"]} />
+          }
+        />
+        <Route
+          path="/admin/orders/customers"
+          element={
+            <ProtectedRoute
+              element={<CustomerOrdersPage />}
+              allowedRoles={["Admin"]}
+            />
+          }
+        />
+        <Route
+          path="/admin/orders/purchase"
+          element={
+            <ProtectedRoute
+              element={<PurchaseOrdersPage />}
+              allowedRoles={["Admin"]}
+            />
+          }
+        />
+        <Route
+          path="/admin/orders/customers/:id/view"
+          element={
+            <ProtectedRoute
+              element={<ViewOrderCustomer />}
+              allowedRoles={["Admin"]}
+            />
+          }
+        />
+        <Route
+          path="/admin/orders/customers/:id/track"
+          element={
+            <ProtectedRoute
+              element={<TrackCustomerOrder />}
+              allowedRoles={["Admin"]}
+            />
+          }
+        />
+        <Route
+          path="/admin/orders/purchase/:id/view"
+          element={
+            <ProtectedRoute
+              element={<PurchaseOrderViewPage />}
+              allowedRoles={["Admin"]}
+            />
+          }
+        />
+        <Route
+          path="/admin/orders/purchase/new"
+          element={
+            <ProtectedRoute
+              element={<NewPurchaseOrderPage />}
+              allowedRoles={["Admin"]}
+            />
+          }
+        />
+        <Route
+          path="/tools/:id/view"
+          element={
+            <ProtectedRoute
+              element={<ProductDetailPage />}
+              allowedRoles={["Admin"]}
+            />
+          }
+        />
+        <Route
+          path="/tools/:id/edit"
+          element={
+            <ProtectedRoute element={<EditTool />} allowedRoles={["Admin"]} />
+          }
+        />
+        <Route
+          path="/analytics"
+          element={
+            <ProtectedRoute
+              element={<AnalyticsPage />}
+              allowedRoles={["Admin"]}
+            />
+          }
+        />
+        <Route
+          path="/socialMedia"
+          element={
+            <ProtectedRoute
               element={<SocialMediaUsersPage />}
+              allowedRoles={["Admin"]}
             />
-            <Route path="/product/view/:id" element={<ViewProduct />} />
-            <Route path="/social-media" element={<UserSocialMedia />} />
-            <Route path="/settings" element={<SettingPage />} />
-          </>
-        ) : (
-          <>
-            <Route path="/home" element={<Navigate to="/" />} />
-            <Route path="/categories" element={<Navigate to="/" />} />
-            <Route path="/products" element={<Navigate to="/" />} />
-            <Route path="/cart/:userId" element={<Navigate to="/" />} />
-            <Route path="/checkout/:userId" element={<Navigate to="/" />} />
-            <Route path="/profile" element={<UserDashboard />} />
-            <Route path="/accountSettings" element={<AccountSettings />} />
-            <Route path="/AI" element={<Navigate to="/" />} />
-          </>
-        )}
+          }
+        />
+        <Route
+          path="/socialMedia/posts"
+          element={
+            <ProtectedRoute
+              element={<SocialMediaPostsPage />}
+              allowedRoles={["Admin"]}
+            />
+          }
+        />
+        <Route
+          path="/socialMedia/reports"
+          element={
+            <ProtectedRoute
+              element={<SocialMediaReportsPage />}
+              allowedRoles={["Admin"]}
+            />
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute
+              element={<SettingPage />}
+              allowedRoles={["Admin"]}
+            />
+          }
+        />
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     </Router>

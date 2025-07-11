@@ -1,5 +1,3 @@
-"use client"
-
 import Navication from "../../HomePage/Component/Navication.jsx"
 import { useState, useRef, useEffect } from "react"
 import {
@@ -469,23 +467,25 @@ export default function UserSocialMedia() {
   }
 
   const handleImageUpload = (e) => {
-    const files = e.target.files
+    const files = e.target.files;
     if (files && files.length > 0) {
-      const newImages = [...newPost.imageAttachments]
-      const newPreviews = [...imagePreview]
-
+      const newImages = [...newPost.imageAttachments];
+      const newPreviews = [...imagePreview];
+  
       Array.from(files).forEach((file) => {
-        const reader = new FileReader()
+        newImages.push(file); // store file
+        const reader = new FileReader();
         reader.onloadend = () => {
-          newPreviews.push(reader.result)
-          newImages.push(reader.result)
-          setImagePreview([...newPreviews])
-          setNewPost({ ...newPost, imageAttachments: [...newImages] })
-        }
-        reader.readAsDataURL(file)
-      })
+          newPreviews.push(reader.result);
+          setImagePreview([...newPreviews]);
+        };
+        reader.readAsDataURL(file);
+      });
+  
+      setNewPost({ ...newPost, imageAttachments: newImages });
     }
-  }
+  };
+  
 
   const handleRemoveImage = (index) => {
     const newPreviews = [...imagePreview]
@@ -498,53 +498,66 @@ export default function UserSocialMedia() {
 
   const handleCreatePost = async () => {
     if (!newPost.title.trim() || !newPost.content.trim() || !newPost.category) {
-      alert("Please fill in all required fields")
-      return
+      alert("Please fill in all required fields");
+      return;
     }
-
+  
+    const formData = new FormData();
     const postData = {
       user_id: user_id,
       post_title: newPost.title,
       post_content: newPost.content,
       category: newPost.category,
-      attachments:
-        newPost.imageAttachments.length > 0
-          ? newPost.imageAttachments.map((_, index) => `https://example.com/images/post-${Date.now()}-${index}.jpg`)
-          : [],
-    }
-
-    const result = await InsertPost(postData)
-    if (result) {
-      const newPostObj = {
-        id: result.post_id,
-        title: newPost.title,
-        content: newPost.content,
-        author: {
-          name: currentUser.name,
-          username: currentUser.username,
-          avatar: currentUser.avatar,
-        },
-        date: new Date().toISOString().split("T")[0],
-        likes: 0,
-        comments: 0,
-        shares: 0,
-        imageAttachments: postData.attachments.length > 0 ? [...postData.attachments] : undefined,
-        category: newPost.category,
-        featured: newPost.featured,
+    };
+  
+    formData.append("postData", JSON.stringify(postData));
+  
+    newPost.imageAttachments.forEach((file) => {
+      formData.append("attachments", file);
+    });
+  
+    try {
+      const response = await fetch("http://127.0.0.1:8000/posts/new", {
+        method: "POST",
+        body: formData,
+      });
+  
+      const data = await response.json();
+      console.log(data)
+  
+      if (response.ok) {
+        toast.success("Post created successfully!", { containerId: "other" });
+  
+        const newPostObj = {
+          id: data.post_id,
+          title: newPost.title,
+          content: newPost.content,
+          author: {
+            name: currentUser.name,
+            username: currentUser.username,
+            avatar: currentUser.avatar,
+          },
+          date: new Date().toISOString().split("T")[0],
+          likes: 0,
+          comments: 0,
+          shares: 0,
+          imageAttachments: data.attachments ?? [],
+          category: newPost.category,
+          featured: newPost.featured,
+        };
+  
+        setPosts([newPostObj, ...posts]);
+        setNewPost({ title: "", content: "", category: "", featured: false, imageAttachments: [] });
+        setImagePreview([]);
+        setCreatePostOpen(false);
+      } else {
+        toast.error(`Failed to create post: ${data.detail || "Unknown error"}`, { containerId: "other" });
       }
-
-      setPosts([newPostObj, ...posts])
-      setNewPost({
-        title: "",
-        content: "",
-        category: "",
-        featured: false,
-        imageAttachments: [],
-      })
-      setImagePreview([])
-      setCreatePostOpen(false)
+    } catch (error) {
+      console.error("Error creating post:", error);
+      toast.error("An error occurred while creating the post.", { containerId: "other" });
     }
-  }
+  };
 
   const filteredPosts = posts
     .filter((post) => {

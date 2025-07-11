@@ -70,6 +70,9 @@ function VerificationPage() {
         if (signUpResponse) {
           console.log("Sign-up successful:", signUpResponse);
           localStorage.setItem("userId", signUpResponse.user_id);
+          localStorage.setItem("userRole", signUpResponse.role);
+          localStorage.setItem("userName", signUpResponse.user_name);
+          localStorage.setItem("userAvatar", signUpResponse.avatar);
           window.dispatchEvent(new Event("storage"));
           toast.success("sign-up successful!", { containerId: "sign-container" });
           setTimeout(() => {

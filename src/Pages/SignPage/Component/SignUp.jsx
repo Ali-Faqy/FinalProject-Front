@@ -29,6 +29,7 @@ function SignUp() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("User");
 
   const handleSignUp = async () => {
     if (!email || !password || !name) {
@@ -105,6 +106,10 @@ function SignUp() {
                       }
                     );
                     localStorage.setItem("userId", res.data.user_id);
+                    localStorage.setItem("userRole", "User");
+                    localStorage.setItem("userName", res.data.user_name);
+                    localStorage.setItem("userAvatar", res.data.avatar);
+                    window.dispatchEvent(new Event("storage"));
                     toast.success("Google sign-up successful!", { containerId: "sign-container" });
                     navigate("/home");
                   } catch (error) {
@@ -139,6 +144,10 @@ function SignUp() {
                       }
                     );
                     localStorage.setItem("userId", res.data.user_id);
+                    localStorage.setItem("userRole", "User");
+                    localStorage.setItem("userName", res.data.user_name);
+                    localStorage.setItem("userAvatar", res.data.avatar);
+                    window.dispatchEvent(new Event("storage"));
                     toast.success("Facebook sign-up successful!", { containerId: "sign-container" });
                     navigate("/home");
                   } catch (error) {
