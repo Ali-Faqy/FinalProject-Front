@@ -59,7 +59,7 @@ export default function Dashboard() {
   const [topSellingProducts, setTopSellingProducts] = useState([]);
   const [monthlySales, setMonthlySales] = useState([]);
 
-  const adminName = "Ali Othman";
+  const adminName = localStorage.getItem("userName") || "Admin";
 
   const fetchRevenue = async () => {
     const response = await getTotalRevenue();

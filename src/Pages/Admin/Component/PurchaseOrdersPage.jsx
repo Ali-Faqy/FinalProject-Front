@@ -174,7 +174,7 @@ export default function PurchaseOrdersPage() {
   };
 
   return (
-    <Layout adminName="Ali Othman">
+    <Layout adminName={localStorage.getItem("userName") || "Admin"}>
       <PageContainer
         title="Purchase Orders"
         description="Manage your supplier purchase orders"

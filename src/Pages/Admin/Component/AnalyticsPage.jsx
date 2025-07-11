@@ -153,7 +153,7 @@ export default function AnalyticsPage() {
   }
 
   return (
-    <Layout adminName={"Ali Othman"}>
+    <Layout adminName={localStorage.getItem("userName") || "Admin"}>
       <PageContainer title="Analytics" description="Track and analyze your business performance">
         {/* Actions Bar */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">

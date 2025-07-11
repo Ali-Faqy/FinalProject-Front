@@ -226,7 +226,7 @@ export default function SocialMediaPage() {
 
   if (!analytics || !topPosts || !activeUsers) {
     return (
-      <Layout adminName={"Ali Othman"}>
+      <Layout adminName={localStorage.getItem("userName") || "Admin"}>
         <PageContainer title="Social Media Reports" description="Loading analytics data...">
           <div className="p-6">
             <p className="text-center text-muted-foreground">Loading analytics data, please wait...</p>
@@ -237,7 +237,7 @@ export default function SocialMediaPage() {
   }
 
   return (
-    <Layout adminName={"Ali Othman"}>
+      <Layout adminName={localStorage.getItem("userName") || "Admin"}>
       <PageContainer
         title="Social Media Reports"
         description="Monitor and manage your social media presence and engagement"

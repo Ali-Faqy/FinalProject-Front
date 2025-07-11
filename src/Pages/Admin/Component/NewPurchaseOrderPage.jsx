@@ -161,7 +161,7 @@ export default function NewPurchaseOrderPage() {
 
   if (!suppliers || !products) {
     return (
-      <Layout adminName="Ali Othman">
+      <Layout adminName={localStorage.getItem("userName") || "Admin"}>
         <PageContainer
           title="Loading..."
           description="Please wait while we load the data."
@@ -175,7 +175,7 @@ export default function NewPurchaseOrderPage() {
   }
 
   return (
-    <Layout adminName="Ali Othman">
+    <Layout adminName={localStorage.getItem("userName") || "Admin"}>
       <PageContainer
         title="Purchase Orders"
         description="Manage your supplier purchase orders"

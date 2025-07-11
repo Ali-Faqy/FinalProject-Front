@@ -227,7 +227,7 @@ export default function CustomerOrdersPage() {
   const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
 
   return (
-    <Layout adminName="Ali Othman">
+    <Layout adminName={localStorage.getItem("userName") || "Admin"}>
       <PageContainer
         title="Customers"
         description="Manage your customer relationships"

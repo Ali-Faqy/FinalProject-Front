@@ -196,7 +196,7 @@ export default function ProductsPage() {
   }
 
   return (
-    <Layout adminName="Ali Othman">
+    <Layout adminName={localStorage.getItem("userName") || "Admin"}>
       <PageContainer
         title="Products"
         description="Manage your agricultural equipment inventory"

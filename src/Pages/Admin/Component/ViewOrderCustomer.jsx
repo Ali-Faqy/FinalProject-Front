@@ -155,7 +155,8 @@ export default function ViewOrderCustomer() {
   };
 
   return (
-    <Layout adminName="Ali Othman">
+    <Layout adminName={
+      localStorage.getItem("userName") || "Admin"}>
       <PageContainer title="" description="">
         <button
           className="flex items-center text-gray-600 hover:text-gray-900 mb-6 transition-colors"

@@ -131,7 +131,7 @@ export default function PurchaseOrderViewPage() {
   }
 
   return (
-    <Layout adminName="Ali Othman">
+    <Layout adminName={localStorage.getItem("userName") || "Admin"}>
       <PageContainer title="Purchase Orders" description="Manage your supplier purchase orders">
         <div className="p-6 max-w-7xl mx-auto bg-gradient-to-b from-slate-50 to-white min-h-screen space-y-8">
           {/* Header with actions */}

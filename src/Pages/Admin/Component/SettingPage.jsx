@@ -416,7 +416,7 @@ export default function SettingsPage() {
     setPreviewUrl(null)
   }
   return (
-    <Layout adminName="Ali Othman">
+    <Layout adminName={localStorage.getItem("userName") || "Admin"}>
       <PageContainer title="Settings" description="Manage drivers, companies, and suppliers">
         <div className="min-h-screen bg-gray-50">
           <div className="container mx-auto p-6 max-w-7xl">

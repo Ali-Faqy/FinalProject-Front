@@ -166,7 +166,7 @@ export default function TrackCustomerOrder() {
 
   if (!trackingInfo || !trackingHistory || !deliveryPersons) {
     return (
-      <Layout adminName={"Ali Othman"}>
+      <Layout adminName={localStorage.getItem("userName") || "Admin"}>
         <PageContainer
           title="Social Media Reports"
           description="Loading analytics data..."
@@ -181,7 +181,7 @@ export default function TrackCustomerOrder() {
     );
   }
   return (
-    <Layout adminName={"Ali Othman"}>
+    <Layout adminName={localStorage.getItem("userName") || "Admin"}>
       <PageContainer
         title="Track Customer Order"
         description="Track the status of customer orders and update shipping information."

@@ -136,7 +136,7 @@ export default function InventoryPage() {
   // Improved loading state
   if (isLoading) {
     return (
-      <Layout adminName="Ali Othman">
+      <Layout adminName={localStorage.getItem("userName") || "Admin"}>
         <PageContainer title="Inventory" description="Loading inventory data...">
           <div className="p-6">
             <p className="text-center text-muted-foreground">
@@ -151,7 +151,7 @@ export default function InventoryPage() {
   // Handle empty data
   if (inventory.length === 0) {
     return (
-      <Layout adminName="Ali Othman">
+      <Layout adminName={localStorage.getItem("userName") || "Admin"}>
         <PageContainer title="Inventory" description="Manage your product inventory">
           <div className="p-6">
             <p className="text-center text-muted-foreground">
@@ -170,7 +170,7 @@ export default function InventoryPage() {
   }
 
   return (
-    <Layout adminName="Ali Othman">
+    <Layout adminName={localStorage.getItem("userName") || "Admin"}>
       <PageContainer title="Inventory" description="Manage your product inventory">
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">

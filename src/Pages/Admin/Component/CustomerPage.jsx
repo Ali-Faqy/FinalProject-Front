@@ -108,7 +108,7 @@ export default function CustomerPage() {
 
   if (isLoading) {
     return (
-      <Layout adminName="Ali Othman">
+      <Layout adminName={localStorage.getItem("userName") || "Admin"}>
         <PageContainer title="Customers" description="Loading...">
           <div className="text-center py-8">Loading customers...</div>
         </PageContainer>
@@ -118,7 +118,7 @@ export default function CustomerPage() {
 
   if (error) {
     return (
-      <Layout adminName="Ali Othman">
+      <Layout adminName={localStorage.getItem("userName") || "Admin"}>
         <PageContainer title="Customers" description="Error">
           <div className="text-center py-8 text-red-500">{error}</div>
         </PageContainer>
@@ -127,7 +127,7 @@ export default function CustomerPage() {
   }
 
   return (
-    <Layout adminName="Ali Othman">
+    <Layout adminName={localStorage.getItem("userName") || "Admin"}>
       <PageContainer title="Customers" description="Manage your customer relationships">
         {/* Search & Filter */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">

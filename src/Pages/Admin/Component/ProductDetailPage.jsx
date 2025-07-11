@@ -89,7 +89,7 @@ export default function ProductDetailPage() {
   const handleEditProduct = () => {};
 
   return (
-    <Layout adminName={"Ali Othman"}>
+    <Layout adminName={localStorage.getItem("userName") || "Admin"}>
       <PageContainer title="" description="">
         {/* Back button and actions */}
         <div className="flex justify-between items-center mb-6">
@@ -213,26 +213,12 @@ export default function ProductDetailPage() {
                     <div className="flex flex-row items-center justify-end gap-4">
                       <button
                         className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-700 hover:to-emerald-600 text-white rounded-lg transition-all duration-300 hover:shadow-lg flex items-center justify-center"
-                        onClick={() => {
-                          InsertProductIntoCart(
-                            userId,
-                            product.id,
-                            1,
-                            product.name
-                          );
-                        }}
                       >
                         <ShoppingCart className="h-5 w-5 mr-2" />
                         Add to Cart
                       </button>
                       <button className="p-3 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors hover:text-red-500"
-                      onClick={() => {
-                        InsertProductIntoWishlist(
-                          userId,
-                          product.id,
-                          product.name
-                        );
-                      }}>
+                      >
                         <Heart className="h-5 w-5" />
                       </button>
                     </div>

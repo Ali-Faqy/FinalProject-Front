@@ -128,7 +128,7 @@ export default function EditTool() {
   }
 
   return (
-    <Layout adminName="Ali Othman">
+    <Layout adminName={localStorage.getItem("userName") || "Admin"}>
       <PageContainer
         title={isEditMode ? "Edit Product" : "Add New Product"}
         description={isEditMode ? "Update product information" : "Add a new product to your inventory"}

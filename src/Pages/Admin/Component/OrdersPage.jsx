@@ -4,7 +4,7 @@ import Layout from "../UI/Layout.jsx";
 import PageContainer from "../UI/PageContainer.jsx";
 export default function OrdersPage() {
   return (
-    <Layout adminName={"Ali Othman"}>
+    <Layout adminName={localStorage.getItem("userName") || "Admin"}>
     <PageContainer title="" description="">
     <div className="bg-gray-50 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">

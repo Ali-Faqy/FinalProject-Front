@@ -121,7 +121,7 @@ export default function DeliveryDetailsPage() {
 
   if (!deliveryDetails) {
     return (
-      <Layout adminName={"Ali othman"}>
+      <Layout adminName={localStorage.getItem("userName") || "Admin"}>
         <PageContainer title="Delivery Details" description="Loading delivery information...">
           <div className="animate-pulse">
             <div className="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
@@ -138,7 +138,7 @@ export default function DeliveryDetailsPage() {
   }
 
   return (
-    <Layout adminName={"Ali othman"}>
+    <Layout adminName={localStorage.getItem("userName") || "Admin"}>
       <PageContainer
         title={`Delivery Details: ORD-${deliveryDetails.order_id}`}
         description="View complete information about this delivery"

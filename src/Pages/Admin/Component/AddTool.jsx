@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
 import { ArrowLeft, ImageIcon, Loader2, Save, X } from "lucide-react"
@@ -122,7 +120,7 @@ export default function AddTool() {
   }
 
   return (
-    <Layout adminName="Ali Othman">
+    <Layout adminName={localStorage.getItem("userName")}>
       <PageContainer title="Add New Product" description="Add a new product to your inventory">
         <Link to="/tools">
           <button

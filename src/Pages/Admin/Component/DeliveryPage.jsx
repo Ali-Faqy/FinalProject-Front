@@ -121,7 +121,7 @@ export default function DeliveryPage() {
   };
 
   return (
-    <Layout adminName={"Ali Othman"}>
+    <Layout adminName={localStorage.getItem("userName") || "Admin"}>
       <PageContainer
         title="Delivery Management"
         description="Track and manage equipment deliveries"

@@ -101,7 +101,7 @@ export default function ViewCustomerInfo() {
   }
 
   return (
-    <Layout adminName="Ali Othman">
+    <Layout adminName={localStorage.getItem("userName") || "Admin"}>
       <PageContainer
         title={customer.name}
         description="Customer details and order history"

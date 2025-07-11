@@ -24,14 +24,14 @@ import {
   getAllReplyCommentsLikes,
 } from "../../../ScoialMedia/Code/SocialMediaData.js"
 import { toast } from "react-toastify"
-
+import NoImage from "../../../../assets/NoImage.jpg "
 export default function SocialMediaPostsPage() {
-  const user_id = Number.parseInt(localStorage.getItem("userId")) || 999
+  const user_id = Number.parseInt(localStorage.getItem("userId"))
   const currentUser = {
-    id: 999,
-    name: "You",
-    username: "current_user",
-    avatar: "/placeholder.svg?height=40&width=40&text=Y",
+    id: user_id,
+    name: localStorage.getItem("userName") ,
+    username: localStorage.getItem("userName")?.toLowerCase().replace(/\s+/g, "_"),
+    avatar: localStorage.getItem("userAvatar") || NoImage,
   }
 
   // State

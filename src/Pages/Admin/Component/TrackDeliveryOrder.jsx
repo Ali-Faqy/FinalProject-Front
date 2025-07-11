@@ -91,7 +91,7 @@ export default function TrackDeliveryOrder() {
 
   if (loading) {
     return (
-      <Layout adminName={"Ali Othman"}>
+      <Layout adminName={localStorage.getItem("userName") || "Admin"}>
         <PageContainer title="Tracking Delivery" description="Loading delivery information...">
           <div className="animate-pulse">
             <div className="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
@@ -106,7 +106,7 @@ export default function TrackDeliveryOrder() {
   }
   
   return (
-    <Layout adminName={"Ali Othman"}>
+    <Layout adminName={localStorage.getItem("userName") || "Admin"}>
       <PageContainer
         title={`Tracking Delivery ${delivery.id}`}
         description={`Current status: ${delivery.status}`}
