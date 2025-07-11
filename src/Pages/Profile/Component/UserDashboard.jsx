@@ -12,6 +12,8 @@ import PaymentTab from "./Tabs/PaymentTab.jsx";
 import { Link } from "react-router-dom";
 
 export default function UserDashboard() {
+  const userame = localStorage.getItem("userName");
+
   const [tabValue, setTabValue] = useState("dashboard");
   const [profileImage, setProfileImage] = useState(
     "https://static.vecteezy.com/system/resources/previews/024/766/959/non_2x/default-female-avatar-profile-icon-social-media-chatting-online-user-free-vector.jpg"
@@ -74,7 +76,7 @@ export default function UserDashboard() {
           </div>
 
           <div className="flex flex-col gap-1 ml-4">
-            <h1 className="text-lg font-bold text-gray-700">Tasnim Ayed</h1>
+            <h1 className="text-lg font-bold text-gray-700">{userame}</h1>
             <p className="text-gray-500 text-sm">labantasnim@example.com</p>
             <div className="flex items-center gap-3 mt-1">
               <span className="text-xs font-semibold text-green-600 bg-green-100 px-2 py-1 rounded-full">Verified</span>

@@ -7,6 +7,7 @@ import ContactUs from "./ContactUs.jsx";
 
 function HomePage() {
     const userId = localStorage.getItem("userId");
+    console.log("User ID:", userId);
     if (!userId) {
         <Link to="/signIn"></Link>
     }
@@ -20,5 +21,6 @@ function HomePage() {
         <ContactUs/>
     </div>
     );
+    
 }
 export default HomePage;

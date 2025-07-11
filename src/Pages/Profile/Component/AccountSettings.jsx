@@ -4,8 +4,9 @@ import Navication from "../../HomePage/Component/Navication.jsx";
 import backgroundImage from "../../../assets/accSettings.jpg";
 
 const AccountSettings = () => {
+  const userame = localStorage.getItem("userName");
   const [user, setUser] = useState({
-    fullName: "Tasnim Ayed",
+    fullName: userame,
     email: "laban@example.com",
     phone: "+9705666666",
     address: "1234 quds St, albirah, ramallah",

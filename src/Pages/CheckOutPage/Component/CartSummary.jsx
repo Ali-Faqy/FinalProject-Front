@@ -7,6 +7,11 @@ export default function CartSummary({ cart, total }) {
 
   const originalTotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0)
   const discountTotal = originalTotal - total
+const getDriveThumbnail = (url) => {
+    if (!url || url.trim() === "") return image10
+    const match = url.match(/\/d\/([^/]+)\//)
+    return match ? `https://drive.google.com/thumbnail?id=${match[1]}` : image10
+  }
 
   return (
     <div className="flex flex-col h-full relative overflow-hidden">
@@ -66,7 +71,7 @@ export default function CartSummary({ cart, total }) {
                       <div className="relative group/image">
                         <div className="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl overflow-hidden shadow-inner">
                           <img
-                            src={item.image || "/placeholder.svg?height=64&width=64"}
+                             src={getDriveThumbnail(item.image)}
                             alt={item.name}
                             className="object-cover w-full h-full group-hover/image:scale-110 transition-transform duration-300"
                           />

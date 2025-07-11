@@ -495,9 +495,6 @@ export default function ViewProduct() {
   const tabs = [
     { id: "overview", label: "Overview", icon: Info },
     { id: "specifications", label: "Specifications", icon: Settings },
-    { id: "reviews", label: "Reviews", icon: Star },
-    { id: "warranty", label: "Warranty", icon: Shield },
-    { id: "shipping", label: "Shipping", icon: Truck },
     { id: "support", label: "Support", icon: MessageCircle },
   ]
 
@@ -687,31 +684,7 @@ export default function ViewProduct() {
                   {/* Image Overlay Controls */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center">
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => setIsPlaying3D(!isPlaying3D)}
-                          className="h-12 w-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 flex items-center justify-center transition-all duration-300 hover:scale-110"
-                        >
-                          {isPlaying3D ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6" />}
-                        </button>
-                        <button
-                          onClick={() => setSoundEnabled(!soundEnabled)}
-                          className="h-12 w-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 flex items-center justify-center transition-all duration-300 hover:scale-110"
-                        >
-                          {soundEnabled ? <Volume2 className="h-6 w-6" /> : <VolumeX className="h-6 w-6" />}
-                        </button>
-                      </div>
-                      <div className="flex gap-2">
-                        <button className="h-12 w-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 flex items-center justify-center transition-all duration-300 hover:scale-110">
-                          <Download className="h-6 w-6" />
-                        </button>
-                        <button
-                          onClick={() => setIsFullscreen(!isFullscreen)}
-                          className="h-12 w-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 flex items-center justify-center transition-all duration-300 hover:scale-110"
-                        >
-                          <Maximize className="h-6 w-6" />
-                        </button>
-                      </div>
+                      
                     </div>
                   </div>
 
@@ -753,13 +726,7 @@ export default function ViewProduct() {
                 ))}
               </div>
 
-              {/* 360° View Button */}
-              <button
-                className={`w-full py-4 rounded-2xl bg-gradient-to-r ${currentTheme.secondary} text-white font-semibold hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2`}
-              >
-                <Camera className="h-5 w-5" />
-                360° Interactive View
-              </button>
+            
             </div>
 
             {/* Enhanced Product Info */}
@@ -907,19 +874,7 @@ export default function ViewProduct() {
                 >
                   <Heart className={`h-6 w-6 ${isLiked ? "fill-current" : ""}`} />
                 </button>
-                <button
-                  onClick={() => setIsBookmarked(!isBookmarked)}
-                  className={`p-4 rounded-2xl border-2 transition-all duration-300 ${
-                    isBookmarked
-                      ? "border-blue-500 bg-blue-50 text-blue-500"
-                      : "border-white/20 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-500"
-                  }`}
-                >
-                  <Bookmark className={`h-6 w-6 ${isBookmarked ? "fill-current" : ""}`} />
-                </button>
-                <button className="p-4 rounded-2xl border-2 border-white/20 hover:border-green-300 hover:bg-green-50 hover:text-green-500 transition-all duration-300">
-                  <Share2 className="h-6 w-6" />
-                </button>
+             
               </div>
 
               {/* Features Grid */}
@@ -1062,202 +1017,6 @@ export default function ViewProduct() {
               </div>
             )}
 
-            {activeTab === "reviews" && (
-              <div className="space-y-8">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-3xl font-bold text-white">Customer Reviews</h3>
-                  <button
-                    className={`bg-gradient-to-r ${currentTheme.primary} text-white px-6 py-3 rounded-2xl hover:shadow-xl transition-all duration-300`}
-                  >
-                    Write a Review
-                  </button>
-                </div>
-
-                {/* Rating Summary */}
-                <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
-                  <div className="grid md:grid-cols-2 gap-8">
-                    <div className="text-center">
-                      <div className="text-6xl font-bold text-white mb-2">{product.rating}</div>
-                      <div className="flex items-center justify-center gap-1 mb-2">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`h-6 w-6 ${
-                              i < Math.floor(product.rating) ? "text-yellow-400 fill-current" : "text-gray-500"
-                            }`}
-                          />
-                        ))}
-                      </div>
-                      <p className="text-white/60">{product.reviews} reviews</p>
-                    </div>
-                    <div className="space-y-3">
-                      {[5, 4, 3, 2, 1].map((stars) => (
-                        <div key={stars} className="flex items-center gap-3">
-                          <span className="text-white w-8">{stars}★</span>
-                          <div className="flex-1 bg-white/10 rounded-full h-3">
-                            <div
-                              className={`bg-gradient-to-r ${currentTheme.accent} h-3 rounded-full transition-all duration-500`}
-                              style={{ width: `${Math.random() * 80 + 10}%` }}
-                            ></div>
-                          </div>
-                          <span className="text-white/60 w-12">{Math.floor(Math.random() * 50)}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Sample Reviews */}
-                <div className="space-y-6">
-                  {[1, 2, 3].map((review) => (
-                    <div key={review} className="bg-white/5 rounded-2xl p-6 border border-white/10">
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="flex items-center gap-3">
-                          <div className="h-12 w-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                            <Users className="h-6 w-6 text-white" />
-                          </div>
-                          <div>
-                            <p className="font-semibold text-white">John Farmer</p>
-                            <div className="flex items-center gap-1">
-                              {Array.from({ length: 5 }).map((_, i) => (
-                                <Star key={i} className="h-4 w-4 text-yellow-400 fill-current" />
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                        <span className="text-white/60 text-sm">2 days ago</span>
-                      </div>
-                      <p className="text-white/80 leading-relaxed mb-4">
-                        Absolutely amazing product! The efficiency and build quality exceeded my expectations. Perfect
-                        for our 25-acre farm and the customer support has been outstanding.
-                      </p>
-                      <div className="flex items-center gap-4">
-                        <button className="flex items-center gap-2 text-white/60 hover:text-green-400 transition-colors">
-                          <ThumbsUp className="h-4 w-4" />
-                          Helpful (12)
-                        </button>
-                        <button className="text-white/60 hover:text-white transition-colors">Reply</button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {activeTab === "warranty" && (
-              <div className="space-y-8">
-                <h3 className="text-3xl font-bold text-white mb-6">Warranty Information</h3>
-                <div className="grid md:grid-cols-2 gap-8">
-                  <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
-                    <h4 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-                      <Shield className="h-5 w-5 text-green-400" />
-                      Coverage Details
-                    </h4>
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-3">
-                        <CheckCircle className="h-5 w-5 text-green-400" />
-                        <span className="text-white">2 Years Full Coverage</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <CheckCircle className="h-5 w-5 text-green-400" />
-                        <span className="text-white">Free Parts Replacement</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <CheckCircle className="h-5 w-5 text-green-400" />
-                        <span className="text-white">24/7 Technical Support</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <CheckCircle className="h-5 w-5 text-green-400" />
-                        <span className="text-white">On-site Service Available</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
-                    <h4 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-                      <Award className="h-5 w-5 text-yellow-400" />
-                      Certifications
-                    </h4>
-                    <div className="space-y-3">
-                      {product.certifications?.map((cert, index) => (
-                        <div key={index} className="flex items-center gap-3">
-                          <Award className="h-5 w-5 text-yellow-400" />
-                          <span className="text-white">{cert}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {activeTab === "shipping" && (
-              <div className="space-y-8">
-                <h3 className="text-3xl font-bold text-white mb-6">Shipping Information</h3>
-                <div className="grid md:grid-cols-2 gap-8">
-                  <div className="space-y-6">
-                    <div className="bg-green-500/10 rounded-2xl p-6 border border-green-500/30">
-                      <div className="flex items-center gap-3 mb-4">
-                        <Truck className="h-6 w-6 text-green-400" />
-                        <h4 className="text-xl font-semibold text-green-300">Free Shipping</h4>
-                      </div>
-                      <p className="text-green-200">
-                        Enjoy free worldwide shipping on this product. Estimated delivery: 5-7 business days.
-                      </p>
-                    </div>
-
-                    <div className="space-y-4">
-                      <h4 className="text-lg font-semibold text-white">Delivery Options</h4>
-                      <div className="space-y-3">
-                        <div className="flex justify-between items-center p-4 bg-white/5 rounded-xl border border-white/10">
-                          <div>
-                            <p className="font-semibold text-white">Standard Delivery</p>
-                            <p className="text-sm text-white/60">5-7 business days</p>
-                          </div>
-                          <span className="font-semibold text-green-400">Free</span>
-                        </div>
-                        <div className="flex justify-between items-center p-4 bg-white/5 rounded-xl border border-white/10">
-                          <div>
-                            <p className="font-semibold text-white">Express Delivery</p>
-                            <p className="text-sm text-white/60">2-3 business days</p>
-                          </div>
-                          <span className="font-semibold text-white">$49.99</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-6">
-                    <div className="bg-blue-500/10 rounded-2xl p-6 border border-blue-500/30">
-                      <div className="flex items-center gap-3 mb-4">
-                        <RotateCcw className="h-6 w-6 text-blue-400" />
-                        <h4 className="text-xl font-semibold text-blue-300">Easy Returns</h4>
-                      </div>
-                      <p className="text-blue-200">
-                        30-day hassle-free returns. If you're not satisfied, return for a full refund.
-                      </p>
-                    </div>
-
-                    <div className="space-y-4">
-                      <h4 className="text-lg font-semibold text-white">Shipping Locations</h4>
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl">
-                          <div className="h-2 w-2 bg-green-500 rounded-full"></div>
-                          <span className="text-white">United States & Canada</span>
-                        </div>
-                        <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl">
-                          <div className="h-2 w-2 bg-green-500 rounded-full"></div>
-                          <span className="text-white">European Union</span>
-                        </div>
-                        <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl">
-                          <div className="h-2 w-2 bg-yellow-500 rounded-full"></div>
-                          <span className="text-white">International (Additional fees may apply)</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
 
             {activeTab === "support" && (
               <div className="space-y-8">

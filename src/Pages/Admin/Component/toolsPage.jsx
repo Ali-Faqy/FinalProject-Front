@@ -28,7 +28,7 @@ export default function ProductsPage() {
           category: product.category_name,
           price: product.selling_price,
           stock: product.remaining_quantity,
-          image: product.attachment_link,
+          image: product.attachments[0],
 
         }));
         setProducts(products);
@@ -161,7 +161,11 @@ export default function ProductsPage() {
 
     return true;
   });
-
+const getDriveThumbnail = (url) => {
+    if (!url || url.trim() === "") return NoImage
+    const match = url.match(/\/d\/([^/]+)\//)
+    return match ? `https://drive.google.com/thumbnail?id=${match[1]}` : url
+  }
   // Calculate pagination values
   const totalProducts = filteredProducts.length;
   const totalPages = Math.ceil(totalProducts / productsPerPage);
@@ -313,7 +317,7 @@ export default function ProductsPage() {
               >
                 <div className="relative h-48 bg-gray-100 overflow-hidden">
                   <img
-                    src={product.image == null ? NoImage : product.image}
+                     src={getDriveThumbnail(product.image) || product.image}
                     alt={product.name}
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />

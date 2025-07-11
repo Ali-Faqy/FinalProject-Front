@@ -59,7 +59,7 @@ export default function ViewCustomerInfo() {
 
     try {
       const response = await fetch(`http://localhost:8000/users/set-status/${customer.id}`, {
-        method: "PATCH",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },

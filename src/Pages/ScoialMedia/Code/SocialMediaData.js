@@ -2,6 +2,7 @@ import { toast } from 'react-toastify';
 
 export async function InsertPost(post) {
   try {
+    console.log("Inserting post:", post);
     const response = await fetch(`http://127.0.0.1:8000/posts/new`, {
       method: "POST",
       headers: {

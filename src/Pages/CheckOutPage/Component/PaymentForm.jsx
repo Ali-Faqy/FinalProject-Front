@@ -1,6 +1,6 @@
-import { useNavigate } from "react-router-dom"
+import { href, useNavigate } from "react-router-dom"
 import { User, Truck, CreditCard, Shield, Zap, DollarSign, CheckCircle } from "lucide-react"
-import { InsertOrder } from "../Data/CheckOut_data"
+import { InsertOrder, InsertOnlineOrder } from "../Data/CheckOut_data"
 import { useState } from "react"
 
 function PaymentForm({ formData, onContinue, cart }) {
@@ -9,11 +9,11 @@ function PaymentForm({ formData, onContinue, cart }) {
   const [isProcessing, setIsProcessing] = useState(false)
   const [selectedPayment, setSelectedPayment] = useState("")
 
-  const handleCheckout = async () => {
+const handleCheckout = async () => {
     setIsProcessing(true)
     setSelectedPayment("stripe")
     try {
-      const response = await fetch("http://localhost:8000/create-checkout-session", {
+      const response = await fetch("http://localhost:8000/payment/create-checkout-session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ cart }),
@@ -21,6 +21,7 @@ function PaymentForm({ formData, onContinue, cart }) {
 
       const data = await response.json()
       console.log("Checkout session:", data)
+      console.log("Redirecting to:", data.url)
       window.location.href = data.url
     } catch (err) {
       console.error("Checkout failed:", err)

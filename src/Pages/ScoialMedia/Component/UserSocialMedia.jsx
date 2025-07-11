@@ -34,7 +34,7 @@ import {
   InsertReportForReplyComment,
 } from "../Code/SocialMediaData.js"
 import { toast } from "react-toastify"
-import NoImage from "../../../../assets/NoImage.jpg "
+import NoImage from "../../../assets/NoImage.jpg"
 
 export default function UserSocialMedia() {
   const user_id = Number.parseInt(localStorage.getItem("userId"))
@@ -513,10 +513,13 @@ export default function UserSocialMedia() {
     formData.append("postData", JSON.stringify(postData));
   
     newPost.imageAttachments.forEach((file) => {
-      formData.append("attachments", file);
+      formData.append("attachment", newPost.imageAttachments[0]);  // بدل "attachments"
+
     });
+    console.log("formData:", JSON.stringify(formData, null, 2));
   
     try {
+      console.log("formData:", formData);
       const response = await fetch("http://127.0.0.1:8000/posts/new", {
         method: "POST",
         body: formData,

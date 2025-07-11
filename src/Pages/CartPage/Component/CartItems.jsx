@@ -21,12 +21,14 @@ function CartItems() {
         name: item.name,
         brand: item.brand,
         price: item.price,
-        image: item.image[0],
+        image: item.image,
         quantity: item.quantity,
         quantityAvailable: item.quantityAvailable,
         discount: item.discount,
       }))
-      setItems(updatedItems)
+      setItems(updatedItems)  
+
+      console.log("Updated Items:", updatedItems)
     }
     setIsLoading(false)
   }
@@ -57,7 +59,11 @@ function CartItems() {
       })
     })
   }
-
+const getDriveThumbnail = (url) => {
+    if (!url || url.trim() === "") return image10
+    const match = url.match(/\/d\/([^/]+)\//)
+    return match ? `https://drive.google.com/thumbnail?id=${match[1]}` : image10
+  }
   const decreaseQuantity = (id) => {
     setItems((prevItems) =>
       prevItems.map((item) => (item.id === id && item.quantity > 1 ? { ...item, quantity: item.quantity - 1 } : item)),
@@ -129,7 +135,7 @@ function CartItems() {
                     <div className="relative group/image">
                       <div className="w-32 h-32 rounded-2xl overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
                         <img
-                          src={item.image === "" ? image10 : item.image}
+                          src={getDriveThumbnail(item.image)}
                           alt={item.name}
                           className="w-full h-full object-cover group-hover/image:scale-110 transition-transform duration-300"
                         />
