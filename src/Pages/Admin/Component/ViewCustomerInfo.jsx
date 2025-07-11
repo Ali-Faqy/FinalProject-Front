@@ -16,62 +16,74 @@ import {
   Clock,
   ArrowLeft,
 } from "lucide-react"
-
+import { toast } from "react-toastify"
 import NoImage from "../../../assets/NoImage.jpg"
-import { useLocation } from "react-router-dom";
-import { getAllOrderForCustomer } from "../Data/CustomerData.js";
+import { useLocation } from "react-router-dom"
+import { getAllOrderForCustomer } from "../Data/CustomerData.js"
+
 export default function ViewCustomerInfo() {
-  const location = useLocation();
-  const data = location.state?.customer;
+  const location = useLocation()
+  const data = location.state?.customer
   const [isDeleting, setIsDeleting] = useState(false)
   const [showStatusConfirm, setShowStatusConfirm] = useState(false)
-
-  const [customer, setCustomer] = useState(data);
+  const [customer, setCustomer] = useState(data)
   const [orderHistory, setOrderHistory] = useState([])
 
   const fetchOrderHistory = async () => {
-      try {
-        const response = await getAllOrderForCustomer(customer.id);
-        if (!response) throw new Error("No customers found");
-        
-        const data = response.map((item) => ({
-          id : item.order_id,
-          date: item.order_date,
-          items: item.number_product,
-          total: item.total_price,
-          status: item.order_status,
-        }));
-        
-        setOrderHistory(data);
-      } catch (err) {
-        console.error("Error fetching customers:", err);
-      }
-    };
+    try {
+      const response = await getAllOrderForCustomer(customer.id)
+      if (!response) throw new Error("No orders found")
+      
+      const data = response.map((item) => ({
+        id: item.order_id,
+        date: item.order_date,
+        items: item.number_product,
+        total: item.total_price,
+        status: item.order_status,
+      }))
+      
+      setOrderHistory(data)
+    } catch (err) {
+      console.error("Error fetching orders:", err)
+      toast.error("Failed to load order history.", { containerId: "other" })
+    }
+  }
 
   useEffect(() => {
-    fetchOrderHistory();
-  }, []);
+    fetchOrderHistory()
+  }, [])
 
+  const handleStatusChange = async () => {
+    setIsDeleting(true)
+    const newStatus = customer.status === "Active" ? "Inactive" : "Active"
 
-  
-
-  const handleStatusChange = () => {
-    setIsDeleting(true);
-    setTimeout(() => {
-      setCustomer((prevCustomer) => {
-        const updatedStatus = prevCustomer.status === "Active" ? "Inactive" : "Active"
-        const updatedCustomer = { ...prevCustomer, status: updatedStatus }  
-        return updatedCustomer
+    try {
+      const response = await fetch(`http://localhost:8000/users/set-status/${customer.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: newStatus }),
       })
-  
+
+      if (response.ok) {
+        setCustomer((prevCustomer) => ({
+          ...prevCustomer,
+          status: newStatus,
+        }))
+        toast.success(`Customer ${newStatus.toLowerCase()} successfully!`, { containerId: "other" })
+      } else {
+        const errorData = await response.json()
+        throw new Error(errorData.detail || "Failed to update customer status")
+      }
+    } catch (error) {
+      console.error("Error updating customer status:", error)
+      toast.error(error.message || "An error occurred while updating the status.", { containerId: "other" })
+    } finally {
+      setIsDeleting(false)
       setShowStatusConfirm(false)
-    }, 1500)
-
-
-
-
+    }
   }
-  
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -96,8 +108,9 @@ export default function ViewCustomerInfo() {
         return "bg-slate-100 text-slate-800"
     }
   }
+
   if (!customer) {
-    return <div>Loading or customer not found...</div>;
+    return <div>Loading or customer not found...</div>
   }
 
   return (
@@ -111,12 +124,11 @@ export default function ViewCustomerInfo() {
         }}
       >
         <Link to="/customers">
-                <button
-                  className="flex items-center text-gray-600 hover:text-gray-900 mb-6 transition-colors"
-                >
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  <span>Back to Customers</span>
-                </button></Link>
+          <button className="flex items-center text-gray-600 hover:text-gray-900 mb-6 transition-colors">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            <span>Back to Customers</span>
+          </button>
+        </Link>
 
         {/* Actions Bar */}
         <div className="flex justify-end gap-3 mb-6">
@@ -180,7 +192,7 @@ export default function ViewCustomerInfo() {
 
             <div className="flex flex-col space-y-6">
               <div className="flex flex-row items-start">
-                <div className="bg-violet-100 rounded-full">
+                <div className="bg-violet-100 rounded-full p-2">
                   <Mail className="h-4 w-4 text-violet-600" />
                 </div>
                 <div className="m-0">
@@ -189,7 +201,7 @@ export default function ViewCustomerInfo() {
                 </div>
               </div>
               <div className="flex flex-row items-start">
-                <div className="bg-violet-100 rounded-full">
+                <div className="bg-violet-100 rounded-full p-2">
                   <Phone className="h-4 w-4 text-emerald-600" />
                 </div>
                 <div className="m-0">
@@ -198,7 +210,7 @@ export default function ViewCustomerInfo() {
                 </div>
               </div>
               <div className="flex flex-row items-start">
-                <div className="bg-violet-100 rounded-full">
+                <div className="bg-violet-100 rounded-full p-2">
                   <MapPin className="h-4 w-4 text-amber-600" />
                 </div>
                 <div className="m-0">
@@ -207,7 +219,7 @@ export default function ViewCustomerInfo() {
                 </div>
               </div>
               <div className="flex flex-row items-start">
-                <div className="bg-violet-100 rounded-full">
+                <div className="bg-violet-100 rounded-full p-2">
                   <Calendar className="h-4 w-4 text-sky-600" />
                 </div>
                 <div className="m-0">
@@ -216,7 +228,7 @@ export default function ViewCustomerInfo() {
                 </div>
               </div>
               <div className="flex flex-row items-start">
-                <div className="bg-violet-100 rounded-full">
+                <div className="bg-violet-100 rounded-full p-2">
                   <CreditCard className="h-4 w-4 text-rose-600" />
                 </div>
                 <div className="m-0">

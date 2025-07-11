@@ -20,7 +20,6 @@ import {
   Clock,
 } from "lucide-react"
 import {
-  InsertPost,
   InsertComment,
   InsertReplyComment,
   InsertLikeForReplyComment,
@@ -35,17 +34,18 @@ import {
   InsertReportForReplyComment,
 } from "../Code/SocialMediaData.js"
 import { toast } from "react-toastify"
+import NoImage from "../../../../assets/NoImage.jpg "
 
 export default function UserSocialMedia() {
   const user_id = Number.parseInt(localStorage.getItem("userId"))
   const initialPosts = []
   const initialPostComments = {}
-  const currentUser = {
-    id: 999,
-    name: "You",
-    username: "current_user",
-    avatar: "/placeholder.svg?height=40&width=40&text=Y",
-  }
+    const currentUser = {
+      id: user_id,
+      name: localStorage.getItem("userName") ,
+      username: localStorage.getItem("userName")?.toLowerCase().replace(/\s+/g, "_"),
+      avatar: localStorage.getItem("userAvatar") || NoImage,
+    }
 
   const [posts, setPosts] = useState(initialPosts)
   const [searchTerm, setSearchTerm] = useState("")
