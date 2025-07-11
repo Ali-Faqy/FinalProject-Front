@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Plus, Edit, Eye, Phone, Mail, MapPin, Car, Building, Truck, X, Upload } from "lucide-react"
+import { Plus, Edit, Eye, Phone, Mail, MapPin, Car, Building, Truck, X, Upload, Lock } from "lucide-react"
 import Layout from "../UI/Layout.jsx"
 import PageContainer from "../UI/PageContainer.jsx"
 import {
@@ -89,7 +89,17 @@ export default function SettingsPage() {
       setLoading(true)
       setError(null)
       const driversData = await getAllDrivers()
-      setDrivers(driversData)
+      // Map API response to include email and password
+      const mappedDrivers = driversData.map((driver) => ({
+        id: driver.id,
+        name: driver.name,
+        phone: driver.phone,
+        email: driver.email || "",
+        password: driver.password || "",
+        photo: driver.photo,
+        vehicleId: driver.vehicleId,
+      }))
+      setDrivers(mappedDrivers)
     } catch (err) {
       setError("Failed to fetch drivers")
       console.error("Error fetching drivers:", err)
@@ -159,7 +169,7 @@ export default function SettingsPage() {
 
   // Driver CRUD operations
   const handleAddDriver = async () => {
-    if (currentDriver.name && currentDriver.phone && currentDriver.vehicleId) {
+    if (currentDriver.name && currentDriver.phone && currentDriver.email && currentDriver.vehicleId) {
       try {
         setLoading(true)
         setError(null)
@@ -167,6 +177,8 @@ export default function SettingsPage() {
         const newDriverData = {
           name: currentDriver.name,
           phone: currentDriver.phone,
+          email: currentDriver.email,
+          password: currentDriver.password || "", // Password is optional
           photo: currentDriver.photo || "/placeholder.svg?height=40&width=40",
           vehicleId: currentDriver.vehicleId,
         }
@@ -190,7 +202,7 @@ export default function SettingsPage() {
   }
 
   const handleUpdateDriver = async () => {
-    if (editingDriverId && currentDriver.name && currentDriver.phone && currentDriver.vehicleId) {
+    if (editingDriverId && currentDriver.name && currentDriver.phone && currentDriver.email && currentDriver.vehicleId) {
       try {
         setLoading(true)
         setError(null)
@@ -199,6 +211,8 @@ export default function SettingsPage() {
           id: Number.parseInt(editingDriverId),
           name: currentDriver.name,
           phone: currentDriver.phone,
+          email: currentDriver.email,
+          password: currentDriver.password || "",
           photo: currentDriver.photo,
           vehicleId: currentDriver.vehicleId,
         }
@@ -404,7 +418,6 @@ export default function SettingsPage() {
     setIsViewModalOpen(true)
   }
 
-
   const resetModals = () => {
     setCurrentDriver({})
     setCurrentCompany({})
@@ -415,6 +428,7 @@ export default function SettingsPage() {
     setSelectedFile(null)
     setPreviewUrl(null)
   }
+
   return (
     <Layout adminName={localStorage.getItem("userName") || "Admin"}>
       <PageContainer title="Settings" description="Manage drivers, companies, and suppliers">
@@ -514,6 +528,9 @@ export default function SettingsPage() {
                                 Phone
                               </th>
                               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Email
+                              </th>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Vehicle ID
                               </th>
                               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -538,6 +555,12 @@ export default function SettingsPage() {
                                   <div className="flex items-center space-x-1">
                                     <Phone className="h-4 w-4 text-gray-400" />
                                     <span>{driver.phone}</span>
+                                  </div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                  <div className="flex items-center space-x-1">
+                                    <Mail className="h-4 w-4 text-gray-400" />
+                                    <span>{driver.email}</span>
                                   </div>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
@@ -789,6 +812,32 @@ export default function SettingsPage() {
                   />
                 </div>
                 <div>
+                  <label htmlFor="driver-email" className="block text-sm font-medium text-gray-700 mb-2">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    id="driver-email"
+                    value={currentDriver.email || ""}
+                    onChange={(e) => setCurrentDriver({ ...currentDriver, email: e.target.value })}
+                    placeholder="Enter email address"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="driver-password" className="block text-sm font-medium text-gray-700 mb-2">
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    id="driver-password"
+                    value={currentDriver.password || ""}
+                    onChange={(e) => setCurrentDriver({ ...currentDriver, password: e.target.value })}
+                    placeholder="Enter password"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  />
+                </div>
+                <div>
                   <label htmlFor="driver-photo" className="block text-sm font-medium text-gray-700 mb-2">
                     Photo
                   </label>
@@ -1035,6 +1084,13 @@ export default function SettingsPage() {
                           <p className="flex items-center space-x-1 mt-1">
                             <Phone className="h-4 w-4 text-gray-500" />
                             <span>{viewData.phone}</span>
+                          </p>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700">Email</label>
+                          <p className="flex items-center space-x-1 mt-1">
+                            <Mail className="h-4 w-4 text-gray-500" />
+                            <span>{viewData.email}</span>
                           </p>
                         </div>
                         <div>
