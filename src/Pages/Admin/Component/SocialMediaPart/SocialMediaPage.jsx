@@ -560,7 +560,6 @@ export default function SocialMediaPage() {
                     </div>
                   </div>
                   <Link to="/socialMedia/users">
-                    {" "}
                     <div className="p-6 pt-0">
                       <span className="text-center inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input h-10 px-4 py-2 w-full hover:bg-black hover:text-white">
                         View All Users

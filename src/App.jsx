@@ -469,6 +469,15 @@ function App() {
           }
         />
         <Route
+          path="/socialMedia/users"
+          element={
+            <ProtectedRoute
+              element={<SocialMediaUsersPage />}
+              allowedRoles={["Admin"]}
+            />
+          }
+        />
+        <Route
           path="/settings"
           element={
             <ProtectedRoute
